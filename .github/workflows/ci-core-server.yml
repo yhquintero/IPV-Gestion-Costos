@@ -45,14 +45,16 @@ jobs:
               print("::error::gradle-ci.log missing")
               raise SystemExit(0)
           all_lines = p.read_text(errors="replace").splitlines()
-          keys = ("FAILURE", "What went wrong", "Could not", "* What", "* Try", "e: ", "e: file", "Execution failed", "Caused by", "error:", "Error ", "unresolved", "Unresolved")
-          keep = [ln for ln in all_lines if any(k in ln for k in keys)]
-          if not keep:
-              keep = all_lines[-40:]
-          print("----- gradle errors -----")
-          print("\n".join(keep[-50:]))
-          snippet = " | ".join(keep[-12:])[:1200]
-          print(f"::error::gradle: {snippet}")
+          print("----- e: and FAILED -----")
+          n = 0
+          for ln in all_lines:
+              if ln.startswith("e: ") or " FAILED" in ln or ln.startswith("e: file://"):
+                  print(ln[:400])
+                  if n < 20:
+                      print(f"::error::{ln[:350]}")
+                      n += 1
+          if n == 0:
+              print("::error::no e:/FAILED lines; see gradle-ci.log")
           PY
       - name: Upload test reports
         if: failure()
