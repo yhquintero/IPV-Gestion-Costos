@@ -85,7 +85,8 @@ En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `to
 | `ci-license` | Evaluador por tabla, Fake `LicenseProvider`, renovación FROM_EXPIRY |
 | `ci-rates` | Parser elTOQUE + Fake HTTP (nunca la API real) |
 | `ci-security` | gitleaks + throttle/caos de sync |
-| `release-*` | Firma y publicación de imágenes/APK con secretos de alcance mínimo |
+| `ci-deploy` | Presencia de Compose, Caddy, dump y runbooks (no publica imágenes) |
+| `release-*` | Firma y publicación de imágenes/APK (no cableado; D-06) |
 
 ## 18.4 Relación con los repositorios origen
 
@@ -106,4 +107,4 @@ En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `to
 | 7 | `deploy/keygen`, módulos `licensing` y `commerce` — **hecho** (Fake; ver [fases/07](fases/07-licencias.md)) |
 | 8 | Proveedores de tasas, `tools/mock-eltoque` — **hecho** (MOCK/SEED; ver [fases/08](fases/08-eltoque.md)) |
 | 9 | Pruebas de carga y seguridad, endurecimiento — **parcial** (ver [fases/09](fases/09-endurecimiento.md)) |
-| 10 | `deploy/compose`, `deploy/backup`, `deploy/runbooks`, flujos de release |
+| 10 | `deploy/compose`, `deploy/backup`, `deploy/runbooks` — **artefactos** (ver [fases/10](fases/10-despliegue.md)); G-4 no firmado |

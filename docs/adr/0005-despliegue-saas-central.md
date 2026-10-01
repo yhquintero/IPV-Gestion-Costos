@@ -11,7 +11,7 @@
 
 1. Topología inicial **A: SaaS central** multi‑organización, con la **misma base desplegable por cliente**.
 2. Aislamiento: `organization_id NOT NULL` + **RLS forzado** + FK compuestas (I‑01). El rol `app_rw` no tiene `BYPASSRLS`.
-3. Hosting y jurisdicción siguen ⛔ pendientes de dictamen; el esquema no asume un proveedor concreto.
+3. Hosting y jurisdicción siguen ⛔ pendientes de dictamen; el esquema no asume un proveedor concreto. El Compose de piloto (`deploy/compose/`, Fase 10) es autoalojable y **no** elige cloud.
 
 ## Verificación
 

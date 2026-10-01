@@ -1,0 +1,6 @@
+# Opcional. No se arranca en el compose mínimo del piloto.
+scrape_configs:
+  - job_name: ipvgc-api
+    metrics_path: /actuator/health
+    static_configs:
+      - targets: ["api:8080"]

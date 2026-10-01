@@ -9,9 +9,9 @@ con usuarios, roles y permisos, auditoría completa y **licenciamiento por usuar
 
 ## Estado
 
-**Fase 9 de 10 — endurecimiento (en curso).** Fases 2–8 están en el repo. Pentest, ZAP, k6 y restauración **no se ejecutan aquí**.
+**Fase 10 de 10 — despliegue (artefactos).** Compose/Caddy/runbooks en el repo. **G‑4 no firmado**; no hay piloto ni simulacro medido.
 
-➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 8:** [`docs/fases/08-eltoque.md`](docs/fases/08-eltoque.md) · **Fase 9:** [`docs/fases/09-endurecimiento.md`](docs/fases/09-endurecimiento.md)
+➡️ **Fases:** [`docs/fases/README.md`](docs/fases/README.md) · **Fase 10:** [`docs/fases/10-despliegue.md`](docs/fases/10-despliegue.md)
 
 ```bash
 # JDK 21 + Docker (Testcontainers)

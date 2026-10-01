@@ -153,7 +153,7 @@
 | `COSIGN_KEY` (o firma sin clave) | **S** | Firma de imágenes |
 | `RENOVATE_TOKEN` | **S** | Actualización de dependencias |
 | `PLAY_SERVICE_ACCOUNT_JSON` | **S** | Solo si se publica en Play ([D‑19](16-decisiones-pendientes.md#d-19)) |
-| `DOMAIN` · `ACME_EMAIL` · `ACME_CA` | — | Caddy/TLS |
+| `DOMAIN` · `ACME_EMAIL` · `ACME_CA` | — | Caddy/TLS. Registry/firma (`GHCR_TOKEN`, `COSIGN_KEY`, `DEPLOY_*`) **no cableados** (D-06) |
 
 ## 20.5b Sitio web (BFF · Fase 4)
 

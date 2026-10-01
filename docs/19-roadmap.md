@@ -81,10 +81,11 @@
 - **Criterios**: los 30 criterios de aceptación del prompt (§36) verificados uno a uno (matriz de trazabilidad por construir al validar el diseño); sin hallazgos críticos/altos abiertos.
 - **Código**: [docs/fases/09-endurecimiento.md](fases/09-endurecimiento.md) · matriz de criterios **documentados** (el §36 no está en el repo). Pentest/ZAP/k6/restauración **no ejecutados**.
 
-### Fase 10 · Despliegue
+### Fase 10 · Despliegue (artefactos)
 
 - **Alcance**: Compose + Caddy, secretos aprovisionados, CI/CD con firma, monitoreo y alertas, copias externas, *runbooks*, lista de salida a producción, **piloto controlado**.
 - **Criterios**: simulacro de restauración cumple RPO/RTO acordados; alertas probadas; criterios de salida del piloto cumplidos (**G‑4**).
+- **Código**: [docs/fases/10-despliegue.md](fases/10-despliegue.md) · `deploy/compose` · `deploy/backup` · `deploy/runbooks`. G‑4 **no firmado**; D‑06 ⛔; simulacro **no medido**.
 
 ## 19.4 Spikes
 
