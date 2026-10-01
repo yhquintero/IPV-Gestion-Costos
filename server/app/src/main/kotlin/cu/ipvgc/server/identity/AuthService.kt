@@ -58,9 +58,9 @@ class AuthService(
                     lockedUntil = rs.getTimestamp("locked_until")?.toInstant(),
                 )
             }
-        val rows = jdbc.query(
+        val rows: List<LoginRow> = jdbc.query(
             "SELECT * FROM app.lookup_user_for_login(?)",
-            { ps: PreparedStatement -> ps.setString(1, email) },
+            arrayOf<Any>(email),
             loginMapper,
         )
         val row = when {
