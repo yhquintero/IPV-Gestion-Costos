@@ -45,11 +45,9 @@ class JwtAuthFilter(
             return
         }
         tx.execute {
-            jdbc.execute { conn ->
-                conn.prepareStatement("SELECT set_config('app.organization_id', ?, true)").use { ps: PreparedStatement ->
-                    ps.setString(1, claims.organizationId.toString())
-                    ps.execute()
-                }
+            jdbc.execute("SELECT set_config('app.organization_id', ?, true)") { ps: PreparedStatement ->
+                ps.setString(1, claims.organizationId.toString())
+                ps.execute()
             }
             val (roles, perms) = accessService.permissionsFor(claims.userId)
             val display = jdbc.query(

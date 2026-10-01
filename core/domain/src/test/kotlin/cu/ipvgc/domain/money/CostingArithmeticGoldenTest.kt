@@ -1,5 +1,6 @@
 package cu.ipvgc.domain.money
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.matchers.shouldBe
@@ -36,7 +37,9 @@ class CostingArithmeticGoldenTest {
             val stream = checkNotNull(
                 CostingArithmeticGoldenTest::class.java.getResourceAsStream("/golden/costing-arithmetic.json"),
             )
-            jacksonObjectMapper().readValue(stream)
+            jacksonObjectMapper()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .readValue(stream)
         }
 
         @JvmStatic

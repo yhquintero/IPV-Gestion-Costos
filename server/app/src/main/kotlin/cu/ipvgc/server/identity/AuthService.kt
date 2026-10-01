@@ -7,6 +7,8 @@ import cu.ipvgc.server.security.JwtService
 import cu.ipvgc.server.web.ApiException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.RowMapper
+import java.sql.PreparedStatement
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
@@ -44,9 +46,8 @@ class AuthService(
 
     fun login(req: LoginRequest): Any {
         val email = req.email.trim().lowercase()
-        val rows = jdbc.query(
-            "SELECT * FROM app.lookup_user_for_login(?)",
-            { rs, _ ->
+        val loginMapper =
+            RowMapper { rs, _ ->
                 LoginRow(
                     id = rs.getObject("id", UUID::class.java),
                     organizationId = rs.getObject("organization_id", UUID::class.java),
@@ -56,8 +57,11 @@ class AuthService(
                     displayName = rs.getString("display_name"),
                     lockedUntil = rs.getTimestamp("locked_until")?.toInstant(),
                 )
-            },
-            email,
+            }
+        val rows = jdbc.query(
+            "SELECT * FROM app.lookup_user_for_login(?)",
+            { ps: PreparedStatement -> ps.setString(1, email) },
+            loginMapper,
         )
         val row = when {
             req.organization_id != null -> rows.firstOrNull { it.organizationId == req.organization_id }
@@ -186,20 +190,16 @@ class AuthService(
     }
 
     private fun call(sql: String, id: UUID) {
-        jdbc.execute { conn ->
-            conn.prepareStatement(sql).use { ps ->
-                ps.setObject(1, id)
-                ps.execute()
-            }
+        jdbc.execute(sql) { ps: PreparedStatement ->
+            ps.setObject(1, id)
+            ps.execute()
         }
     }
 
     private fun withOrg(orgId: UUID) {
-        jdbc.execute { conn ->
-            conn.prepareStatement("SELECT set_config('app.organization_id', ?, true)").use { ps ->
-                ps.setString(1, orgId.toString())
-                ps.execute()
-            }
+        jdbc.execute("SELECT set_config('app.organization_id', ?, true)") { ps: PreparedStatement ->
+            ps.setString(1, orgId.toString())
+            ps.execute()
         }
     }
 
