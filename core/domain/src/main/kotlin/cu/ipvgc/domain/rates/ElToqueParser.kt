@@ -1,6 +1,5 @@
 package cu.ipvgc.domain.rates
 
-import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -19,7 +18,6 @@ object ElToqueParser {
     private val mapper =
         ObjectMapper().apply {
             enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-            factory.configure(JsonParser.Feature.USE_BIG_DECIMAL_FOR_FLOATS, true)
         }
 
     fun parse(

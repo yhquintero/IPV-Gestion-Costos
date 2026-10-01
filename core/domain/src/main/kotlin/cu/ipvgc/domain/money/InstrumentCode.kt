@@ -19,6 +19,11 @@ value class InstrumentCode(val code: String) {
     companion object {
         private val CODE = Regex("^[A-Z]{3,8}$")
 
+        val CUP = InstrumentCode("CUP")
+        val USD = InstrumentCode("USD")
+        val EUR = InstrumentCode("EUR")
+        val MLC = InstrumentCode("MLC")
+
         fun parse(raw: String): InstrumentCode = InstrumentCode(raw.trim().uppercase())
     }
 }
