@@ -21,6 +21,9 @@ ipvgc:
   env: ${APP_ENV:dev}
   sync:
     stage: ${IPVGC_SYNC_STAGE:A_COUNTS}
+  keygen:
+    mode: ${KEYGEN_MODE:FAKE}
+    webhook-secret: ${KEYGEN_WEBHOOK_SECRET:fake-webhook-secret}
   jwt:
     access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:900}
   refresh:

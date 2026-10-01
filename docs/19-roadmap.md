@@ -63,10 +63,11 @@
 - **Criterios**: **E‑1…E‑5 en verde en CI**; revisión de G‑2 (aislamiento, amenazas, conflictos, recuperación); 2 semanas de uso interno en 6a **sin pérdida de datos**.
 - **Código**: [docs/fases/06-sync-offline.md](fases/06-sync-offline.md) · `core/domain/.../sync` · `server/.../sync` · `android/core/data`.
 
-### Fase 7 · Keygen, licencias y comercial
+### Fase 7 · Keygen, licencias y comercial (en curso)
 
 - **Alcance**: adaptadores `LicenseProvider`; aprovisionamiento idempotente de políticas y derechos; activación y archivos de máquina; asiento web; *webhooks*; aplicación de derechos; renovación; catálogo de precios, contratos, pagos, recibos; pantallas de plataforma.
 - **Criterios**: evaluador de estados **dirigido por tabla** (los 7 estados + orden de evaluación); conciliación de renovaciones; pruebas con proveedor simulado **y** con Keygen real/CE (según D‑05).
+- **Código**: [docs/fases/07-licencias.md](fases/07-licencias.md) · `core/domain/.../license` · `server/.../licensing` · `commerce` · `deploy/keygen`. Cloud ⛔ D-05.
 
 ### Fase 8 · elTOQUE
 

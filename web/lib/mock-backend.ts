@@ -116,6 +116,32 @@ const users: User[] = [
 const tokens = new Map<string, string>(); // token -> userId
 const sheets = new Map<string, Sheet>();
 const controls = new Map<string, Control>();
+const priceCatalog = [
+  { id: "price-trial", policy_code: "IPV-TRIAL-7D", kind: "LICENSE", duration_days: 7, price_usd: 25 },
+  { id: "price-m", policy_code: "IPV-MENSUAL", kind: "LICENSE", duration_days: 30, price_usd: 25 },
+  { id: "price-t", policy_code: "IPV-TRIMESTRAL", kind: "LICENSE", duration_days: 90, price_usd: 75 },
+  { id: "price-s", policy_code: "IPV-SEMESTRAL", kind: "LICENSE", duration_days: 180, price_usd: 195 },
+  { id: "price-a", policy_code: "IPV-ANUAL", kind: "LICENSE", duration_days: 365, price_usd: 360 },
+  { id: "price-b", policy_code: "IPV-BIENAL", kind: "LICENSE", duration_days: 730, price_usd: 600 },
+  { id: "price-y", policy_code: "IPV-TRIENAL", kind: "LICENSE", duration_days: 1095, price_usd: 1020 },
+];
+type Contract = { id: string; organization_id: string; number: string; type: string; status: string; total_usd: number };
+const contracts: Contract[] = [];
+const receipts: Array<{ id: string; organization_id: string; number: string; payment_id: string; amount: number; currency: string }> = [];
+const mockLicenses = new Map<
+  string,
+  {
+    id: string;
+    organization_id: string;
+    user_id: string;
+    policy_code: string;
+    status: string;
+    expires_at: string | null;
+    entitlements: string[];
+    max_devices: number;
+  }
+>();
+const webhookIds = new Set<string>();
 const products = [
   { id: PRODUCT, company_id: COMPANY, category_id: CATEGORY, kind: "PRODUCT", code: "PIZZA", name: "Pizza sintética", organization_id: ORG_A },
 ];
@@ -421,6 +447,79 @@ export function mockHandle(
     return jsonOk(audit.filter((a) => a.org === user.organization_id).map((a, i) => ({ seq: i + 1, action: a.action, result: "SUCCESS" })));
   }
   if (method === "GET" && p === "/api/v1/notifications") return jsonOk([]);
+  if (method === "GET" && p === "/api/v1/price-catalog") return jsonOk(priceCatalog);
+  if (method === "GET" && p === "/api/v1/contracts") {
+    return jsonOk(contracts.filter((c) => c.organization_id === user.organization_id));
+  }
+  if (method === "POST" && p === "/api/v1/contracts") {
+    const b = body as { number: string; type?: string };
+    const row: Contract = {
+      id: `ctr-${++seq}`,
+      organization_id: user.organization_id,
+      number: b.number,
+      type: b.type ?? "LICENSE",
+      status: "DRAFT",
+      total_usd: 0,
+    };
+    contracts.push(row);
+    return jsonOk(row);
+  }
+  if (method === "GET" && p === "/api/v1/receipts") {
+    return jsonOk(receipts.filter((r) => r.organization_id === user.organization_id));
+  }
+  if (method === "GET" && p === "/api/v1/licenses/me") {
+    const mine = [...mockLicenses.values()].find(
+      (l) => l.organization_id === user.organization_id && l.user_id === user.id,
+    );
+    if (!mine) return jsonOk({ status: "NOT_ACTIVATED", entitlements: [] });
+    return jsonOk({
+      id: mine.id,
+      policy_code: mine.policy_code,
+      status: mine.status,
+      blocks_access: ["EXPIRED", "REVOKED", "DISCONNECTED", "DEVICE_LIMIT", "NOT_ACTIVATED", "SUSPENDED"].includes(
+        mine.status,
+      ),
+      expires_at: mine.expires_at,
+      entitlements: mine.entitlements,
+      max_devices: mine.max_devices,
+    });
+  }
+  if (method === "GET" && p === "/api/v1/licenses") {
+    return jsonOk(
+      [...mockLicenses.values()]
+        .filter((l) => l.organization_id === user.organization_id)
+        .map((l) => ({
+          id: l.id,
+          user_id: l.user_id,
+          policy_code: l.policy_code,
+          status: l.status,
+          expires_at: l.expires_at,
+          max_devices: l.max_devices,
+        })),
+    );
+  }
+  if (method === "POST" && p === "/api/v1/licenses") {
+    const b = body as { user_id: string; policy_code: string; max_devices?: number };
+    const id = `lic-${++seq}`;
+    mockLicenses.set(id, {
+      id,
+      organization_id: user.organization_id,
+      user_id: b.user_id,
+      policy_code: b.policy_code,
+      status: "INACTIVE",
+      expires_at: null,
+      entitlements: ["IPV_BASIC", "COST_SHEETS", "REPORTS", "ANDROID_ACCESS", "WEB_ACCESS"],
+      max_devices: b.max_devices ?? 2,
+    });
+    return jsonOk({ id, status: "INACTIVE", policy_code: b.policy_code });
+  }
+  if (method === "POST" && p === "/api/v1/webhooks/keygen") {
+    const b = body as { id?: string; type?: string };
+    if (!b.id) return problem(400, "missing_id", "event id required");
+    const dup = webhookIds.has(b.id);
+    webhookIds.add(b.id);
+    return jsonOk({ id: b.id, type: b.type ?? "unknown", duplicate: dup, mode: "FAKE" });
+  }
   if (method === "GET" && p === "/api/v1/reports/cost-sheets") {
     return jsonOk(
       [...sheets.values()].map((s) => ({

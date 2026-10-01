@@ -18,7 +18,10 @@ const LINKS: Array<{ href: string; label: string; perm?: string; platform?: bool
   { href: "/app/usuarios", label: "Usuarios", perm: "users:manage" },
   { href: "/app/licencias", label: "Licencias" },
   { href: "/app/configuracion", label: "Configuración" },
-  { href: "/plataforma/organizaciones", label: "Plataforma", platform: true },
+  { href: "/plataforma/organizaciones", label: "Organizaciones", platform: true },
+  { href: "/plataforma/precios", label: "Catálogo", platform: true },
+  { href: "/plataforma/contratos", label: "Contratos", platform: true },
+  { href: "/plataforma/licencias", label: "Licencias org.", platform: true },
 ];
 
 export function PanelShell({ me, children }: { me: Me; children: React.ReactNode }) {

@@ -5,63 +5,65 @@ import java.time.temporal.ChronoUnit
 
 /**
  * Función pura `(archivo verificado, reloj fiable) → estado` (doc 7.6).
- * Orden de evaluación fijo y cubierto por vectores dorados.
+ * Orden de evaluación **dirigido por tabla** [EVALUATION_TABLE]; cubierto por vectores dorados.
  */
 object LicenseEvaluator {
+
+    data class Step(
+        val id: String,
+        val result: LicenseStatus,
+        val match: (LicenseEvaluationInput, Instant, Boolean) -> Boolean,
+    )
+
+    /** Orden de doc 7.6. El primer paso que coincide gana. */
+    val EVALUATION_TABLE: List<Step> =
+        listOf(
+            Step("no-file-revoked", LicenseStatus.REVOKED) { i, _, _ ->
+                !i.hasFile && (i.lastKnownRevoked || provider(i, "NOT_FOUND", "REVOKED"))
+            },
+            Step("no-file-suspended", LicenseStatus.SUSPENDED) { i, _, _ ->
+                !i.hasFile && (i.lastKnownSuspended || provider(i, "SUSPENDED"))
+            },
+            Step("no-file-device-limit", LicenseStatus.DEVICE_LIMIT) { i, _, _ ->
+                !i.hasFile && provider(i, "TOO_MANY_MACHINES")
+            },
+            Step("no-file-not-activated", LicenseStatus.NOT_ACTIVATED) { i, _, _ ->
+                !i.hasFile && provider(i, "NO_MACHINE", "FINGERPRINT_SCOPE_MISMATCH")
+            },
+            Step("no-file-disconnected", LicenseStatus.DISCONNECTED) { i, _, _ ->
+                !i.hasFile && !i.onlineServerAuthority
+            },
+            Step("crypto-invalid", LicenseStatus.NOT_ACTIVATED) { i, _, _ ->
+                i.hasFile && (i.algActual != i.algExpected || !i.signatureValid || !i.fingerprintMatches)
+            },
+            Step("revoked", LicenseStatus.REVOKED) { i, _, _ ->
+                i.lastKnownRevoked || provider(i, "NOT_FOUND", "REVOKED")
+            },
+            Step("suspended", LicenseStatus.SUSPENDED) { i, _, _ ->
+                i.lastKnownSuspended || provider(i, "SUSPENDED")
+            },
+            Step("device-limit", LicenseStatus.DEVICE_LIMIT) { i, _, _ -> provider(i, "TOO_MANY_MACHINES") },
+            Step("not-activated", LicenseStatus.NOT_ACTIVATED) { i, _, _ ->
+                provider(i, "NO_MACHINE", "FINGERPRINT_SCOPE_MISMATCH")
+            },
+            Step("expired", LicenseStatus.EXPIRED) { i, now, _ ->
+                provider(i, "EXPIRED") || (i.licenseExpiresAt != null && !now.isBefore(i.licenseExpiresAt))
+            },
+            Step("clock-or-file", LicenseStatus.DISCONNECTED) { i, now, clockBroken ->
+                clockBroken || (i.fileExpiresAt != null && !now.isBefore(i.fileExpiresAt))
+            },
+            Step("offline-grace", LicenseStatus.OFFLINE_GRACE) { i, _, _ -> !i.serverReachable },
+            Step("expiring", LicenseStatus.EXPIRING) { i, now, _ ->
+                val remaining = i.remainingDays ?: daysUntil(i.licenseExpiresAt, now)
+                remaining != null && remaining <= i.expiringThresholdDays
+            },
+        )
 
     fun evaluate(input: LicenseEvaluationInput): LicenseStatus {
         val now = reliableNow(input.clock)
         val clockBroken = isClockInconsistent(input.clock, input.issuedAt)
-
-        if (!input.hasFile) {
-            return when {
-                input.lastKnownRevoked || provider(input, "NOT_FOUND", "REVOKED") -> LicenseStatus.REVOKED
-                input.lastKnownSuspended || provider(input, "SUSPENDED") -> LicenseStatus.SUSPENDED
-                provider(input, "TOO_MANY_MACHINES") -> LicenseStatus.DEVICE_LIMIT
-                provider(input, "NO_MACHINE", "FINGERPRINT_SCOPE_MISMATCH") -> LicenseStatus.NOT_ACTIVATED
-                else -> LicenseStatus.DISCONNECTED
-            }
-        }
-
-        val cryptoOk =
-            input.algActual == input.algExpected &&
-                input.signatureValid &&
-                input.fingerprintMatches
-        if (!cryptoOk) {
-            return LicenseStatus.NOT_ACTIVATED
-        }
-
-        if (input.lastKnownRevoked || provider(input, "NOT_FOUND", "REVOKED")) {
-            return LicenseStatus.REVOKED
-        }
-        if (input.lastKnownSuspended || provider(input, "SUSPENDED")) {
-            return LicenseStatus.SUSPENDED
-        }
-        if (provider(input, "TOO_MANY_MACHINES")) {
-            return LicenseStatus.DEVICE_LIMIT
-        }
-        if (provider(input, "NO_MACHINE", "FINGERPRINT_SCOPE_MISMATCH")) {
-            return LicenseStatus.NOT_ACTIVATED
-        }
-
-        val expiredByClock =
-            input.licenseExpiresAt != null && !now.isBefore(input.licenseExpiresAt)
-        if (expiredByClock || provider(input, "EXPIRED")) {
-            return LicenseStatus.EXPIRED
-        }
-
-        val fileExpired = input.fileExpiresAt != null && !now.isBefore(input.fileExpiresAt)
-        if (clockBroken || fileExpired) {
-            return LicenseStatus.DISCONNECTED
-        }
-
-        if (!input.serverReachable) {
-            return LicenseStatus.OFFLINE_GRACE
-        }
-
-        val remaining = input.remainingDays ?: daysUntil(input.licenseExpiresAt, now)
-        if (remaining != null && remaining <= input.expiringThresholdDays) {
-            return LicenseStatus.EXPIRING
+        for (step in EVALUATION_TABLE) {
+            if (step.match(input, now, clockBroken)) return step.result
         }
         return LicenseStatus.VALID
     }

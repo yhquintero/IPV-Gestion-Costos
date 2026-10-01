@@ -95,6 +95,7 @@
 | `KEYGEN_VERIFY_KEY` | — (pública) | clave pública de la cuenta | **También se incrusta en las apps**; crítica para integridad |
 | `KEYGEN_LICENSE_SCHEME` | — | `ECDSA_P256_SIGN` · `ED25519_SIGN` | Resultado de S‑1 |
 | `KEYGEN_WEBHOOK_TOLERANCE_SECONDS` | — | `300` | Verificación de firma con la clave pública |
+| **`KEYGEN_WEBHOOK_SECRET`** (o `_FILE`) | **S** | HMAC hex (`X-Webhook-Signature`) | Solo servidor; en `FAKE` el default es marcador local |
 | `LICENSE_OFFLINE_GRACE_DAYS` | — | `14` | 7‑15; TTL del archivo de máquina |
 | `LICENSE_EXPIRING_THRESHOLD_DAYS` | — | `7` | POR VENCER |
 | `LICENSE_DEFAULT_MAX_DEVICES` | — | `2` | Configurable |

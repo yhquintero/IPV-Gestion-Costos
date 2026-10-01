@@ -19,5 +19,5 @@ Keygen Cloud se rige por ley de Texas y Cuba está bajo embargo de EE. UU. No ha
 
 ## Consecuencias
 
-- Fase 7 implementa el adaptador. Fase 2 solo el esquema y I‑18.
+- Fase 7 implementa el adaptador **Fake** y deja Cloud/CE como `KeygenCloudDisabledProvider` hasta dictamen.
 - Spike S‑1 (CE local) sigue pendiente del propietario.

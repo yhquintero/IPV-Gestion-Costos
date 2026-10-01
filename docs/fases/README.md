@@ -8,4 +8,5 @@
 | 4 | [Web](04-web.md) | En curso |
 | 5 | [Android](05-android.md) | En curso |
 | 6 | [Sync/offline](06-sync-offline.md) | En curso |
-| 7–10 | [Roadmap](../19-roadmap.md) | Pendientes de su *gate* |
+| 7 | [Keygen / comercial](07-licencias.md) | En curso (Fake; Cloud ⛔ D-05) |
+| 8–10 | [Roadmap](../19-roadmap.md) | Pendientes de su *gate* |

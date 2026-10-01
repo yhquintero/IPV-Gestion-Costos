@@ -25,6 +25,7 @@ class SecurityConfig(
                 it.requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/mfa", "/api/v1/auth/refresh")
                     .permitAll()
                 it.requestMatchers(HttpMethod.GET, "/api/v1/openapi.yaml", "/actuator/health").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/api/v1/webhooks/keygen").permitAll()
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)

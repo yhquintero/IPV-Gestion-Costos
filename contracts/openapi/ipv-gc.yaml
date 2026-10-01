@@ -1,11 +1,12 @@
 openapi: 3.1.0
 info:
   title: IPV Gestión de Costos API
-  version: 0.6.0
+  version: 0.7.0
   description: |
-    Contrato Fases 3–6. Autenticación Bearer JWT (EdDSA).
+    Contrato Fases 3–7. Autenticación Bearer JWT (EdDSA).
     Errores `application/problem+json`. Mutaciones aceptan `Idempotency-Key` y `If-Match`.
     Sync: POST /sync/push, GET /sync/changes, GET /sync/bootstrap.
+    Licencias: Fake LicenseProvider (KEYGEN_MODE=FAKE). Cloud bloqueado hasta D-05.
 servers:
   - url: /api/v1
 tags:
@@ -20,6 +21,8 @@ tags:
   - name: notifications
   - name: reports
   - name: sync
+  - name: licensing
+  - name: commerce
 paths:
   /auth/login:
     post:
@@ -278,6 +281,85 @@ paths:
       tags: [sync]
       responses:
         "200": { description: epoch, cursor y aviso de instantánea paginada }
+  /licenses/me:
+    get:
+      tags: [licensing]
+      responses:
+        "200": { description: Estado evaluado (tabla 7.6) y entitlements del usuario }
+  /licenses:
+    get:
+      tags: [licensing]
+      responses:
+        "200": { description: Licencias de la organización (admin) }
+    post:
+      tags: [licensing]
+      responses:
+        "201": { description: Emite licencia vía LicenseProvider (idempotente; I-18 sin clave) }
+  /licenses/{id}/activate:
+    post:
+      tags: [licensing]
+      responses:
+        "200": { description: Activa máquina; vigencia FROM_FIRST_ACTIVATION }
+  /licenses/{id}/web-seat:
+    post:
+      tags: [licensing]
+      responses:
+        "200": { description: Asiento web lógico web:<license_id> }
+  /licenses/{id}/machine-file:
+    post:
+      tags: [licensing]
+      responses:
+        "200": { description: Checkout de machine file (HMAC-FAKE en KEYGEN_MODE=FAKE) }
+  /licenses/{id}/renew:
+    post:
+      tags: [licensing]
+      responses:
+        "200": { description: Renovación FROM_EXPIRY (idempotente) }
+  /licenses/{id}/reconcile:
+    get:
+      tags: [licensing]
+      responses:
+        "200": { description: Compara expiry proveedor vs espejo }
+  /webhooks/keygen:
+    post:
+      tags: [licensing]
+      security: []
+      responses:
+        "200": { description: Webhook HMAC idempotente por event id }
+  /price-catalog:
+    get:
+      tags: [commerce]
+      responses:
+        "200": { description: Catálogo editable USD (D-08) }
+  /contracts:
+    get:
+      tags: [commerce]
+      responses:
+        "200": { description: Contratos de la organización }
+    post:
+      tags: [commerce]
+      responses:
+        "201": { description: Alta de contrato }
+  /contracts/{id}/items:
+    post:
+      tags: [commerce]
+      responses:
+        "200": { description: Ítem con CUP congelado HALF_UP }
+  /payments:
+    post:
+      tags: [commerce]
+      responses:
+        "201": { description: Pago PENDING }
+  /payments/{id}/confirm:
+    post:
+      tags: [commerce]
+      responses:
+        "200": { description: Confirma pago, recibo y renovación opcional }
+  /receipts:
+    get:
+      tags: [commerce]
+      responses:
+        "200": { description: Recibos }
   /openapi.yaml:
     get:
       tags: [auth]

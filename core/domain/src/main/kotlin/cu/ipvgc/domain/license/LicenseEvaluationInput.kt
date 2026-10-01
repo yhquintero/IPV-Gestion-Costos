@@ -36,6 +36,8 @@ data class LicenseEvaluationInput(
     val remainingDays: Long? = null,
     val expiringThresholdDays: Long = DEFAULT_EXPIRING_DAYS,
     val clock: ClockSnapshot,
+    /** Web en línea: el servidor es autoridad; no hay machine file. */
+    val onlineServerAuthority: Boolean = false,
 ) {
     companion object {
         const val EXPECTED_ALG: String = "base64+ecdsa-p256"

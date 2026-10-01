@@ -82,6 +82,7 @@ En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `to
 | `ci-contract` | Validación y *diff* de OpenAPI, pruebas de contrato |
 | `ci-security` | gitleaks, CodeQL/Semgrep, Trivy (código y contenedores), dependency‑check, ZAP contra *staging* |
 | `ci-sync` | Suite E‑1…E‑5 (gate G‑3) en cada cambio que toque sincronización |
+| `ci-license` | Evaluador por tabla, Fake `LicenseProvider`, renovación FROM_EXPIRY |
 | `release-*` | Firma y publicación de imágenes/APK con secretos de alcance mínimo |
 
 ## 18.4 Relación con los repositorios origen
@@ -100,7 +101,7 @@ En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `to
 | 4 | `web/` (Next.js + BFF + Playwright) — **hecho** (ver [fases/04](fases/04-web.md)) |
 | 5 | `android/` (multimódulo, `includeBuild` de `core`) — **hecho** (ver [fases/05](fases/05-android.md)) |
 | 6 | Sync (módulo `sync`, outbox Android, suite E‑1…E‑5) — **hecho** (ver [fases/06](fases/06-sync-offline.md)) |
-| 7 | `deploy/keygen`, módulos `licensing` y `commerce` |
+| 7 | `deploy/keygen`, módulos `licensing` y `commerce` — **hecho** (Fake; ver [fases/07](fases/07-licencias.md)) |
 | 8 | Proveedores de tasas, `tools/mock-eltoque` |
 | 9 | Pruebas de carga y seguridad, endurecimiento |
 | 10 | `deploy/compose`, `deploy/backup`, `deploy/runbooks`, flujos de release |

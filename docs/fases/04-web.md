@@ -15,7 +15,7 @@
 | Almacén de demostración si `API_URL` está vacío | `web/lib/mock-backend.ts` |
 | Sitio público (USD + CUP derivado etiquetado) | `web/app/(public)/` |
 | Panel por rol | `web/app/(panel)/app/` |
-| Plataforma | `web/app/(panel)/plataforma/` |
+| Plataforma | `web/app/(panel)/plataforma/` (organizaciones, catálogo, contratos, licencias · Fase 7) |
 | CSP con *nonce* + cabeceras | `web/middleware.ts`, `web/next.config.ts` |
 | Playwright + axe | `web/e2e/` |
 | CI web | `.github/workflows/ci-web.yml` |

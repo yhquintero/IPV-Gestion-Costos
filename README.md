@@ -9,14 +9,14 @@ con usuarios, roles y permisos, auditoría completa y **licenciamiento por usuar
 
 ## Estado
 
-**Fase 6 de 10 — sync/offline (en curso).** Fases 2–5 están en el repo; esta fase añade el protocolo de sincronización (E‑1…E‑5) y la etapa 6a (conteos).
+**Fase 7 de 10 — licencias y comercial (en curso).** Fases 2–6 están en el repo. Keygen Cloud sigue ⛔ D-05; el corte usa `FakeLicenseProvider`.
 
-➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 5:** [`docs/fases/05-android.md`](docs/fases/05-android.md) · **Fase 6:** [`docs/fases/06-sync-offline.md`](docs/fases/06-sync-offline.md)
+➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 6:** [`docs/fases/06-sync-offline.md`](docs/fases/06-sync-offline.md) · **Fase 7:** [`docs/fases/07-licencias.md`](docs/fases/07-licencias.md)
 
 ```bash
-# JDK 21 + Docker (Testcontainers) — Fases 2–3 + evaluador + E-1…E-5
+# JDK 21 + Docker (Testcontainers) — Fases 2–3 + evaluador + E-1…E-5 + licencias
 gradle test
-gradle :core:domain:test --tests cu.ipvgc.domain.sync.SyncScenariosTest
+gradle :core:domain:test --tests cu.ipvgc.domain.license.*
 
 # Web (Fase 4)
 cd web && npm ci && npm run test:e2e
