@@ -1,6 +1,9 @@
 package cu.ipvgc.server.identity
 
+import cu.ipvgc.domain.security.LoginThrottle
 import cu.ipvgc.server.security.currentUser
+import cu.ipvgc.server.web.ApiException
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -24,10 +27,21 @@ data class LogoutBody(val refresh_token: String? = null)
 
 @RestController
 @RequestMapping("/api/v1")
-class AuthController(private val auth: AuthService) {
+class AuthController(
+    private val auth: AuthService,
+    private val throttle: LoginThrottle,
+) {
     @PostMapping("/auth/login")
-    fun login(@Valid @RequestBody body: LoginBody): ResponseEntity<Any> =
-        ResponseEntity.ok(auth.login(LoginRequest(body.email, body.password, body.organization_id)))
+    fun login(
+        @Valid @RequestBody body: LoginBody,
+        request: HttpServletRequest,
+    ): ResponseEntity<Any> {
+        val ip = request.remoteAddr ?: "unknown"
+        if (!throttle.allow("ip:$ip") || !throttle.allow("email:${body.email.trim().lowercase()}")) {
+            throw ApiException.tooManyRequests()
+        }
+        return ResponseEntity.ok(auth.login(LoginRequest(body.email, body.password, body.organization_id)))
+    }
 
     @PostMapping("/auth/mfa")
     fun mfa(@Valid @RequestBody body: MfaBody): TokenResponse =

@@ -26,5 +26,8 @@ class ApiException(
 
         fun badRequest(code: String, detail: String): ApiException =
             ApiException(HttpStatus.BAD_REQUEST, code, detail)
+
+        fun tooManyRequests(detail: String = "too many login attempts"): ApiException =
+            ApiException(HttpStatus.TOO_MANY_REQUESTS, "rate_limited", detail)
     }
 }

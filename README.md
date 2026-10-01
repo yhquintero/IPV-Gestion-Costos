@@ -9,14 +9,14 @@ con usuarios, roles y permisos, auditoría completa y **licenciamiento por usuar
 
 ## Estado
 
-**Fase 8 de 10 — elTOQUE (en curso).** Fases 2–7 están en el repo. La API live sigue ⛔ D-04; el corte usa SEED/MOCK.
+**Fase 9 de 10 — endurecimiento (en curso).** Fases 2–8 están en el repo. Pentest, ZAP, k6 y restauración **no se ejecutan aquí**.
 
-➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 7:** [`docs/fases/07-licencias.md`](docs/fases/07-licencias.md) · **Fase 8:** [`docs/fases/08-eltoque.md`](docs/fases/08-eltoque.md)
+➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 8:** [`docs/fases/08-eltoque.md`](docs/fases/08-eltoque.md) · **Fase 9:** [`docs/fases/09-endurecimiento.md`](docs/fases/09-endurecimiento.md)
 
 ```bash
 # JDK 21 + Docker (Testcontainers)
 gradle test
-gradle :core:domain:test --tests cu.ipvgc.domain.rates.*
+gradle :core:domain:test --tests cu.ipvgc.domain.security.* --tests cu.ipvgc.domain.sync.*
 
 # Web (Fase 4)
 cd web && npm ci && npm run test:e2e

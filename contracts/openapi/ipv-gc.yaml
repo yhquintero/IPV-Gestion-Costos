@@ -1,9 +1,9 @@
 openapi: 3.1.0
 info:
   title: IPV Gestión de Costos API
-  version: 0.8.0
+  version: 0.9.0
   description: |
-    Contrato Fases 3–8. Autenticación Bearer JWT (EdDSA).
+    Contrato Fases 3–9. Autenticación Bearer JWT (EdDSA).
     Errores `application/problem+json`. Mutaciones aceptan `Idempotency-Key` y `If-Match`.
     Sync: POST /sync/push, GET /sync/changes, GET /sync/bootstrap.
     Licencias: Fake LicenseProvider (KEYGEN_MODE=FAKE). Cloud bloqueado hasta D-05.
@@ -45,6 +45,8 @@ paths:
           description: Tokens o desafío MFA
         "401":
           description: Credenciales inválidas (respuesta uniforme)
+        "429":
+          description: Throttle de login (IP o correo)
   /auth/refresh:
     post:
       tags: [auth]

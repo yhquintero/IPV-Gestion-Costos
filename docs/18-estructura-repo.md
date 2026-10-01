@@ -84,6 +84,7 @@ En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `to
 | `ci-sync` | Suite E‑1…E‑5 (gate G‑3) en cada cambio que toque sincronización |
 | `ci-license` | Evaluador por tabla, Fake `LicenseProvider`, renovación FROM_EXPIRY |
 | `ci-rates` | Parser elTOQUE + Fake HTTP (nunca la API real) |
+| `ci-security` | gitleaks + throttle/caos de sync |
 | `release-*` | Firma y publicación de imágenes/APK con secretos de alcance mínimo |
 
 ## 18.4 Relación con los repositorios origen
@@ -104,5 +105,5 @@ En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `to
 | 6 | Sync (módulo `sync`, outbox Android, suite E‑1…E‑5) — **hecho** (ver [fases/06](fases/06-sync-offline.md)) |
 | 7 | `deploy/keygen`, módulos `licensing` y `commerce` — **hecho** (Fake; ver [fases/07](fases/07-licencias.md)) |
 | 8 | Proveedores de tasas, `tools/mock-eltoque` — **hecho** (MOCK/SEED; ver [fases/08](fases/08-eltoque.md)) |
-| 9 | Pruebas de carga y seguridad, endurecimiento |
+| 9 | Pruebas de carga y seguridad, endurecimiento — **parcial** (ver [fases/09](fases/09-endurecimiento.md)) |
 | 10 | `deploy/compose`, `deploy/backup`, `deploy/runbooks`, flujos de release |

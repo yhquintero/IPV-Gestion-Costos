@@ -10,4 +10,5 @@
 | 6 | [Sync/offline](06-sync-offline.md) | En curso |
 | 7 | [Keygen / comercial](07-licencias.md) | En curso (Fake; Cloud ⛔ D-05) |
 | 8 | [elTOQUE](08-eltoque.md) | En curso (MOCK/SEED; API ⛔ D-04) |
-| 9–10 | [Roadmap](../19-roadmap.md) | Pendientes de su *gate* |
+| 9 | [Endurecimiento](09-endurecimiento.md) | En curso (pentest/ZAP/k6/restauración ⛔) |
+| 10 | [Roadmap](../19-roadmap.md) | Pendiente de su *gate* |

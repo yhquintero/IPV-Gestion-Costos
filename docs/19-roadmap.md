@@ -75,10 +75,11 @@
 - **Criterios**: pruebas de contrato con *fixtures* reales saneados; inyección de fallos; lista de cumplimiento de términos; D‑04 respondida.
 - **Código**: [docs/fases/08-eltoque.md](fases/08-eltoque.md) · `core/domain/.../rates` · `server/.../rates` · `tools/mock-eltoque`. API live ⛔ D-04.
 
-### Fase 9 · Pruebas y endurecimiento
+### Fase 9 · Pruebas y endurecimiento (en curso)
 
 - **Alcance**: regresión completa, seguridad (ZAP, ASVS L2, MASVS), carga (k6), caos de sync, accesibilidad, **prueba de penetración externa**, simulacro de restauración.
 - **Criterios**: los 30 criterios de aceptación del prompt (§36) verificados uno a uno (matriz de trazabilidad por construir al validar el diseño); sin hallazgos críticos/altos abiertos.
+- **Código**: [docs/fases/09-endurecimiento.md](fases/09-endurecimiento.md) · matriz de criterios **documentados** (el §36 no está en el repo). Pentest/ZAP/k6/restauración **no ejecutados**.
 
 ### Fase 10 · Despliegue
 
@@ -111,4 +112,4 @@ Código revisado · pruebas automáticas (unidad + integración + contrato donde
 
 ## 19.7 Trazabilidad con los criterios de aceptación (§36)
 
-Cada fase define **criterios propios verificables** (arriba). La matriz que cruza los 30 criterios del §36 con fases y pruebas se construye al validar el diseño, con el texto íntegro de esos criterios en la mano.
+Cada fase define **criterios propios verificables** (arriba). El texto del §36 **no está en este repositorio**. Hay una matriz de criterios **documentados** en [fases/09-matriz-aceptacion.md](fases/09-matriz-aceptacion.md); el cruce 1:1 con el prompt espera el texto íntegro.

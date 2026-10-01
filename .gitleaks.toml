@@ -1,0 +1,17 @@
+title = "ipv-gestion-costos"
+
+[allowlist]
+description = "Marcadores sintéticos documentados; no son secretos de producción"
+paths = [
+  '''\.env\.example$''',
+  '''web/lib/mock-backend\.ts$''',
+  '''android/scripts/assert-no-secrets\.sh$''',
+  '''docs/''',
+]
+regexes = [
+  '''change-me''',
+  '''Seed-Passw0rd!''',
+  '''dev-only-change-me''',
+  '''fake-webhook-secret''',
+  '''FAKE-NOT-A-SECRET''',
+]

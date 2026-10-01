@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | Fase 1 entregada · Fases 2–7 en el repo · **Fase 8 elTOQUE en curso** — [fases/08](fases/08-eltoque.md) |
+| **Estado** | Fase 1 entregada · Fases 2–8 en el repo · **Fase 9 endurecimiento en curso** — [fases/09](fases/09-endurecimiento.md) |
 | **Fecha** | 2026‑10‑01 |
 | **Objetivo del producto** | Unir `IPV_Fichas-Costos` e `inventario` (Cuadre Pinar) en **un solo sitio web HTTPS profesional** y **una sola app Android (Kotlin)**, con usuarios, roles, HTTPS y licenciamiento Keygen por usuario |
 | **Prioridades** | Seguridad > Trazabilidad > Corrección de datos > Mantenibilidad > Offline > Rendimiento > Estética |

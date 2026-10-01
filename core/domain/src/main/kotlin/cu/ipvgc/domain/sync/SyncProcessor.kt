@@ -14,6 +14,13 @@ class SyncProcessor(
                 },
             )
         }
+        if (request.items.size > SyncRules.MAX_BATCH) {
+            return PushResponse(
+                request.items.map {
+                    MutationAck(it.mutationId, MutationResultStatus.REJECTED, RejectCodes.PAYLOAD_TOO_LARGE)
+                },
+            )
+        }
         val org = store.organizationOf(request.userId)
         val acks = request.items.sortedBy { it.seqNo }.map { item -> applyOne(request.userId, org, request.deviceId, item) }
         return PushResponse(acks)
@@ -22,13 +29,14 @@ class SyncProcessor(
     fun pull(userId: UUID, cursor: Long, clientEpoch: Long, limit: Int = SyncRules.DEFAULT_PULL_LIMIT): PullResult {
         val org = store.organizationOf(userId)
         val epoch = store.epoch(org)
+        val capped = limit.coerceIn(1, SyncRules.DEFAULT_PULL_LIMIT)
         if (clientEpoch != epoch) {
             return PullResult.ResyncRequired(epoch, "epoch mismatch")
         }
         if (cursor < store.minRetainedSeq(org)) {
             return PullResult.ResyncRequired(epoch, "cursor expired")
         }
-        val changes = store.changesAfter(org, cursor, limit)
+        val changes = store.changesAfter(org, cursor, capped)
         val newCursor = changes.lastOrNull()?.seq ?: cursor
         return PullResult.Changes(epoch, changes, newCursor)
     }
@@ -40,6 +48,11 @@ class SyncProcessor(
 
     private fun applyOne(userId: UUID, org: UUID, deviceId: UUID, item: PushItem): MutationAck {
         store.findMutation(item.mutationId)?.let { return it }
+
+        val payloadChars = item.payload.values.sumOf { it.length }
+        if (payloadChars > SyncRules.MAX_PAYLOAD_CHARS) {
+            return persist(item, org, deviceId, MutationAck(item.mutationId, MutationResultStatus.REJECTED, RejectCodes.PAYLOAD_TOO_LARGE))
+        }
 
         if (!store.licenseOk(userId)) {
             return persist(item, org, deviceId, MutationAck(item.mutationId, MutationResultStatus.REJECTED, RejectCodes.LICENSE_INVALID))

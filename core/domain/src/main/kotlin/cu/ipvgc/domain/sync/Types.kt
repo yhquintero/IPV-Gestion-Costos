@@ -28,6 +28,8 @@ object SyncRules {
     const val CLIENT_SCHEMA: Int = 1
     const val MAX_ATTEMPTS: Int = 8
     const val DEFAULT_PULL_LIMIT: Int = 200
+    const val MAX_BATCH: Int = 100
+    const val MAX_PAYLOAD_CHARS: Int = 8_192
 
     fun policy(type: SyncEntityType): ConflictPolicy =
         when (type) {
@@ -121,4 +123,5 @@ object RejectCodes {
     const val STAGE_NOT_ENABLED = "STAGE_NOT_ENABLED"
     const val ONLINE_ONLY = "ONLINE_ONLY"
     const val UPGRADE_REQUIRED = "UPGRADE_REQUIRED"
+    const val PAYLOAD_TOO_LARGE = "PAYLOAD_TOO_LARGE"
 }

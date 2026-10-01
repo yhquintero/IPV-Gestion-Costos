@@ -6,6 +6,7 @@ import cu.ipvgc.domain.rates.ElToqueLiveDisabledHttp
 import cu.ipvgc.domain.rates.ExchangeRateProvider
 import cu.ipvgc.domain.rates.SimulatedElToqueHttp
 import cu.ipvgc.domain.rates.TokenBucketLimiter
+import cu.ipvgc.domain.security.OutboundAllowlist
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -67,7 +68,7 @@ class LiveElToqueHttp(
     init {
         val root = URI(baseUrl)
         val host = root.host ?: ""
-        require(host == "tasas.eltoque.com") {
+        require(OutboundAllowlist.elToqueHost(host)) {
             "ELTOQUE_API_URL host '$host' is not allow-listed"
         }
         endpoint = root.resolve("/v1/trmi")

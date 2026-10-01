@@ -1,6 +1,6 @@
 # Fase 5 · MASVS L1 (parcial)
 
-Lista de control **MASVS 2.0** nivel L1 aplicada al esqueleto Android. No es certificación. Fase 9 la cierra.
+Lista de control **MASVS 2.0** nivel L1 aplicada al esqueleto Android. No es certificación. Fase 9 **no la cierra**: falta instrumentación en dispositivo y pentest móvil.
 
 | Control | Estado | Evidencia |
 |---|---|---|

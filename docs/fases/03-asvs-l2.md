@@ -7,6 +7,7 @@ No es una certificación. Mapa de controles implementados frente a OWASP ASVS 4.
 | V2.1.1 | Longitud de contraseña ≥ 12 recomendada (se acepta lo almacenado; política UI en Fase 4) | Parcial |
 | V2.4.1 | Argon2id (m=19456, t=2, p=1) | Hecho |
 | V2.2.1 | MFA TOTP opcional; obligatorio a roles privilegiados queda para política de alta de usuarios (Fase 3 enrollment pendiente de UI) | Parcial |
+| V2.2 / A-01 | Límite de intentos de login (`LoginThrottle` + `locked_until`) | Hecho (app; borde en Fase 10) |
 | V2.2.4 | Sin preguntas de seguridad | Hecho |
 | V3.3 | Sesiones: access JWT corto EdDSA + refresh opaco rotatorio con *hash* | Hecho |
 | V3.5 | Revocación de refresh (`/auth/logout`, reutilización revoca familia) | Hecho |
@@ -21,4 +22,4 @@ No es una certificación. Mapa de controles implementados frente a OWASP ASVS 4.
 | V13.1 | OpenAPI como contrato | Hecho |
 | V14.4.3 | Cabeceras de seguridad del panel (CSP) | Fase 4 |
 
-Hallazgos residuales: enrollment MFA en API (severidad media), rate-limit de login (previsto, no cableado al borde), cifrado de campo TOTP (semilla en `bytea` sin envolver — **no usar en producción** hasta Fase 3+ endurecimiento).
+Hallazgos residuales: enrollment MFA en API (severidad media), rate-limit de login **en aplicación** (Fase 9 `LoginThrottle`; el borde/Caddy queda en Fase 10), cifrado de campo TOTP (semilla en `bytea` sin envolver — **no usar en producción**). Pentest ⛔.
