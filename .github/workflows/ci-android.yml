@@ -30,10 +30,10 @@ jobs:
       - name: Sin secretos en fuentes
         run: bash android/scripts/assert-no-secrets.sh
       - name: Evaluador de licencia (JVM)
-        run: gradle :core:domain:test --tests "cu.ipvgc.domain.license.*" --no-daemon
+        run: gradle :core:domain:test --tests "cu.ipvgc.domain.license.*" --no-daemon --stacktrace
       - name: Unit tests + APK debug
         working-directory: android
-        run: gradle testDebugUnitTest assembleDebug --no-daemon
+        run: gradle testDebugUnitTest assembleDebug --no-daemon --stacktrace
       - name: Cadenas prohibidas en el APK
         run: |
           APK=$(ls android/app/build/outputs/apk/debug/*.apk | head -1)

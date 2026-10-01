@@ -33,4 +33,4 @@ jobs:
         with:
           gradle-version: "8.14.3"
       - name: Suite tasas
-        run: gradle :core:domain:test --tests "cu.ipvgc.domain.rates.*" --no-daemon
+        run: gradle :core:domain:test --tests "cu.ipvgc.domain.rates.*" --no-daemon --stacktrace

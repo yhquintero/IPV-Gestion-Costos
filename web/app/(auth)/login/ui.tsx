@@ -1,13 +1,13 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Mark } from "@/components/Mark";
 import Link from "next/link";
 
 export function LoginForm() {
-  const router = useRouter();
-  const next = useSearchParams().get("next") ?? "/app/inicio";
+  const nextParam = useSearchParams().get("next") ?? "/app/inicio";
+  const next = nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/app/inicio";
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -29,8 +29,8 @@ export function LoginForm() {
       setError("No se pudo iniciar sesión. Verifique el correo y la contraseña.");
       return;
     }
-    router.push(next);
-    router.refresh();
+    // Carga completa para que el middleware vea la cookie HttpOnly (router.push pierde la carrera).
+    window.location.assign(next);
   }
 
   return (

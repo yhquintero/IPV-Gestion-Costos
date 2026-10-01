@@ -30,4 +30,4 @@ jobs:
         with:
           gradle-version: "8.14.3"
       - name: Hardening JVM
-        run: gradle :core:domain:test --tests "cu.ipvgc.domain.security.*" --tests "cu.ipvgc.domain.sync.*" --no-daemon
+        run: gradle :core:domain:test --tests "cu.ipvgc.domain.security.*" --tests "cu.ipvgc.domain.sync.*" --no-daemon --stacktrace

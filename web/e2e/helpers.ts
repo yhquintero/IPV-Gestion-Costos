@@ -8,7 +8,12 @@ export async function login(page: Page, email: string) {
   await page.getByLabel("Correo").fill(email);
   await page.getByLabel("Contraseña").fill(DEMO_PASSWORD);
   await page.getByTestId("login-submit").click();
-  await page.waitForURL(/\/app\//);
+  await Promise.race([
+    page.waitForURL(/\/app\//, { waitUntil: "domcontentloaded", timeout: 20_000 }),
+    page.getByRole("alert").waitFor({ state: "visible", timeout: 20_000 }).then(async () => {
+      throw new Error(`login failed: ${await page.getByRole("alert").innerText()}`);
+    }),
+  ]);
 }
 
 export async function logout(page: Page) {

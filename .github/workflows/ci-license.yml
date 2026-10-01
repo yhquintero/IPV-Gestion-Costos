@@ -37,4 +37,4 @@ jobs:
         with:
           gradle-version: "8.14.3"
       - name: Suite licencia (tabla, Fake, renovación)
-        run: gradle :core:domain:test --tests "cu.ipvgc.domain.license.*" --no-daemon
+        run: gradle :core:domain:test --tests "cu.ipvgc.domain.license.*" --no-daemon --stacktrace
