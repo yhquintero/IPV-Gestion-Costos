@@ -99,7 +99,7 @@ En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `to
 | 3 | API en `server/app` (paquetes = módulos), `contracts/openapi`, `GET /audit/verify` — **hecho** (ver [fases/03](fases/03-backend-api.md)) |
 | 4 | `web/` (Next.js + BFF + Playwright) — **hecho** (ver [fases/04](fases/04-web.md)) |
 | 5 | `android/` (multimódulo, `includeBuild` de `core`) — **hecho** (ver [fases/05](fases/05-android.md)) |
-| 6 | Sync (módulo `sync`, `core-data` de Android), suite E‑1…E‑5 |
+| 6 | Sync (módulo `sync`, outbox Android, suite E‑1…E‑5) — **hecho** (ver [fases/06](fases/06-sync-offline.md)) |
 | 7 | `deploy/keygen`, módulos `licensing` y `commerce` |
 | 8 | Proveedores de tasas, `tools/mock-eltoque` |
 | 9 | Pruebas de carga y seguridad, endurecimiento |

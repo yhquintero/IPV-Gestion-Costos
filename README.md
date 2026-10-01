@@ -9,13 +9,14 @@ con usuarios, roles y permisos, auditoría completa y **licenciamiento por usuar
 
 ## Estado
 
-**Fase 5 de 10 — Android (en curso).** Fases 2–4 están en el repo; esta fase añade la app multimódulo (en línea + caché de lectura) y el evaluador de licencia en `core:domain`.
+**Fase 6 de 10 — sync/offline (en curso).** Fases 2–5 están en el repo; esta fase añade el protocolo de sincronización (E‑1…E‑5) y la etapa 6a (conteos).
 
-➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 4:** [`docs/fases/04-web.md`](docs/fases/04-web.md) · **Fase 5:** [`docs/fases/05-android.md`](docs/fases/05-android.md)
+➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 5:** [`docs/fases/05-android.md`](docs/fases/05-android.md) · **Fase 6:** [`docs/fases/06-sync-offline.md`](docs/fases/06-sync-offline.md)
 
 ```bash
-# JDK 21 + Docker (Testcontainers) — Fases 2–3 (+ evaluador de licencia)
+# JDK 21 + Docker (Testcontainers) — Fases 2–3 + evaluador + E-1…E-5
 gradle test
+gradle :core:domain:test --tests cu.ipvgc.domain.sync.SyncScenariosTest
 
 # Web (Fase 4)
 cd web && npm ci && npm run test:e2e

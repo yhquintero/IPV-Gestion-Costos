@@ -24,6 +24,7 @@ object DatabaseModule {
         val factory = SupportOpenHelperFactory(key.passphrase())
         return Room.databaseBuilder(context, IpvDatabase::class.java, "ipvgc.db")
             .openHelperFactory(factory)
+            .addMigrations(MIGRATION_1_2)
             .fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }

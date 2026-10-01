@@ -80,6 +80,47 @@ data class IpvControlDto(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+data class SyncPushBody(val mutations: List<SyncMutationDto>)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SyncMutationDto(
+    val mutation_id: String,
+    val seq_no: Long,
+    val entity_type: String,
+    val entity_id: String,
+    val op: String,
+    val base_version: Long? = null,
+    val payload: Map<String, String> = emptyMap(),
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SyncPushResponse(val acks: List<SyncAckDto> = emptyList())
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SyncAckDto(
+    val mutation_id: String,
+    val status: String,
+    val result_code: String? = null,
+    val entity_version: Long? = null,
+    val server_state: Map<String, String>? = null,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SyncPullResponse(
+    val status: String? = null,
+    val epoch: Long? = null,
+    val cursor: Long? = null,
+    val reason: String? = null,
+    val changes: List<Map<String, Any?>> = emptyList(),
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SyncBootstrapResponse(
+    val epoch: Long? = null,
+    val cursor: Long? = null,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class RateDto(
     val instrument: String,
     val value: String,

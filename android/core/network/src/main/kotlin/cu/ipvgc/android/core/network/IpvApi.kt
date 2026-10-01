@@ -68,4 +68,20 @@ interface IpvApi {
 
     @GET("rates/current")
     suspend fun rates(): Response<List<RateDto>>
+
+    @POST("sync/push")
+    suspend fun syncPush(
+        @Header("X-Device-Id") deviceId: String,
+        @Header("X-Client-Schema") schema: Int = 1,
+        @Body body: SyncPushBody,
+    ): Response<SyncPushResponse>
+
+    @GET("sync/changes")
+    suspend fun syncChanges(
+        @retrofit2.http.Query("cursor") cursor: Long,
+        @retrofit2.http.Query("epoch") epoch: Long,
+    ): Response<SyncPullResponse>
+
+    @GET("sync/bootstrap")
+    suspend fun syncBootstrap(): Response<SyncBootstrapResponse>
 }

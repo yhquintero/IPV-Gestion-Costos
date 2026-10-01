@@ -7,4 +7,5 @@
 | 3 | [Backend/API](03-backend-api.md) | En curso |
 | 4 | [Web](04-web.md) | En curso |
 | 5 | [Android](05-android.md) | En curso |
-| 6–10 | [Roadmap](../19-roadmap.md) | Pendientes de su *gate* |
+| 6 | [Sync/offline](06-sync-offline.md) | En curso |
+| 7–10 | [Roadmap](../19-roadmap.md) | Pendientes de su *gate* |

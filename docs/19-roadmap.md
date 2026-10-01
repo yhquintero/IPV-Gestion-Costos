@@ -57,10 +57,11 @@
 - **Criterios**: pruebas instrumentadas; migraciones de Room probadas; lista MASVS L1; el APK **no contiene secretos**; *build* reproducible.
 - **Código**: [docs/fases/05-android.md](fases/05-android.md) · `android/` · `core/domain/.../license`.
 
-### Fase 6 · Sincronización y offline (ADR‑0001)
+### Fase 6 · Sincronización y offline (ADR‑0001) (en curso)
 
 - **Alcance**: protocolo (bootstrap/push/pull/lápidas/`RESYNC_REQUIRED`), outbox, centro de conflictos, WorkManager, ahorro de datos. Etapas **6a** (conteos), **6b** (controles y movimientos), **6c** (borradores).
 - **Criterios**: **E‑1…E‑5 en verde en CI**; revisión de G‑2 (aislamiento, amenazas, conflictos, recuperación); 2 semanas de uso interno en 6a **sin pérdida de datos**.
+- **Código**: [docs/fases/06-sync-offline.md](fases/06-sync-offline.md) · `core/domain/.../sync` · `server/.../sync` · `android/core/data`.
 
 ### Fase 7 · Keygen, licencias y comercial
 

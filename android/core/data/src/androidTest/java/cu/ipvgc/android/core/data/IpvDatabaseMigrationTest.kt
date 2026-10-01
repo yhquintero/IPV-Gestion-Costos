@@ -30,7 +30,7 @@ class IpvDatabaseMigrationTest {
 
     @Test
     fun version1CreatesReadCacheTables() {
-        helper.createDatabase(dbName, 1).use { db ->
+        helper.createDatabase(dbName, 2).use { db ->
             db.query("SELECT name FROM sqlite_master WHERE type='table'").use { c ->
                 val names = mutableSetOf<String>()
                 while (c.moveToNext()) names.add(c.getString(0))
@@ -40,6 +40,9 @@ class IpvDatabaseMigrationTest {
                 require("ipv_controls" in names)
                 require("rates_cache" in names)
                 require("sync_state" in names)
+                require("outbox" in names)
+                require("conflicts" in names)
+                require("inventory_counts" in names)
             }
         }
         val ctx = InstrumentationRegistry.getInstrumentation().targetContext

@@ -12,8 +12,11 @@ import androidx.room.RoomDatabase
         IpvControlEntity::class,
         RateEntity::class,
         SyncStateEntity::class,
+        OutboxEntity::class,
+        ConflictEntity::class,
+        InventoryCountEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 abstract class IpvDatabase : RoomDatabase() {
@@ -23,4 +26,8 @@ abstract class IpvDatabase : RoomDatabase() {
     abstract fun costSheets(): CostSheetDao
     abstract fun controls(): IpvControlDao
     abstract fun rates(): RateDao
+    abstract fun outbox(): OutboxDao
+    abstract fun conflicts(): ConflictDao
+    abstract fun counts(): InventoryCountDao
+    abstract fun syncState(): SyncStateDao
 }

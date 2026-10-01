@@ -25,7 +25,7 @@ class MigrationReproducibilityIT {
                 connection.createStatement().use { st ->
                     st.executeQuery("SELECT count(*) FROM flyway_schema_history WHERE success").use { rs ->
                         rs.next()
-                        rs.getInt(1) shouldBe 11
+                        rs.getInt(1) shouldBe 12
                     }
                 }
             }

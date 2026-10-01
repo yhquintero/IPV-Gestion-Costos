@@ -19,6 +19,8 @@ server:
 
 ipvgc:
   env: ${APP_ENV:dev}
+  sync:
+    stage: ${IPVGC_SYNC_STAGE:A_COUNTS}
   jwt:
     access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:900}
   refresh:

@@ -1,10 +1,11 @@
 openapi: 3.1.0
 info:
   title: IPV Gestión de Costos API
-  version: 0.3.0
+  version: 0.6.0
   description: |
-    Contrato Fase 3. Autenticación Bearer JWT (EdDSA).
+    Contrato Fases 3–6. Autenticación Bearer JWT (EdDSA).
     Errores `application/problem+json`. Mutaciones aceptan `Idempotency-Key` y `If-Match`.
+    Sync: POST /sync/push, GET /sync/changes, GET /sync/bootstrap.
 servers:
   - url: /api/v1
 tags:
@@ -18,6 +19,7 @@ tags:
   - name: audit
   - name: notifications
   - name: reports
+  - name: sync
 paths:
   /auth/login:
     post:
@@ -246,6 +248,36 @@ paths:
       tags: [reports]
       responses:
         "200": { description: Reporte básico }
+  /sync/push:
+    post:
+      tags: [sync]
+      parameters:
+        - in: header
+          name: X-Device-Id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: header
+          name: X-Client-Schema
+          schema: { type: integer, default: 1 }
+      responses:
+        "200": { description: Acks APPLIED / CONFLICT / REJECTED por mutation_id (I-15) }
+  /sync/changes:
+    get:
+      tags: [sync]
+      parameters:
+        - in: query
+          name: cursor
+          schema: { type: integer }
+        - in: query
+          name: epoch
+          schema: { type: integer }
+      responses:
+        "200": { description: Cambios y lápidas, o RESYNC_REQUIRED }
+  /sync/bootstrap:
+    get:
+      tags: [sync]
+      responses:
+        "200": { description: epoch, cursor y aviso de instantánea paginada }
   /openapi.yaml:
     get:
       tags: [auth]
