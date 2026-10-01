@@ -70,14 +70,14 @@ class AuthService(
             else -> throw ApiException.badRequest("ambiguous_organization", "organization_id is required")
         }
         if (row == null || !encoder.matches(req.password, row.passwordHash)) {
-            row?.let {
-                call("SELECT app.register_login_failure(?)", it.id)
-                tx.execute {
-                    withOrg(it.organizationId)
+            row?.let { failed ->
+                call("SELECT app.register_login_failure(?)", failed.id)
+                tx.execute { _ ->
+                    withOrg(failed.organizationId)
                     audit.record(
                         action = "AUTH.LOGIN.FAILED",
                         result = "DENIED",
-                        organizationId = it.organizationId,
+                        organizationId = failed.organizationId,
                     )
                 }
             }
