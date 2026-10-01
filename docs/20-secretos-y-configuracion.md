@@ -136,7 +136,7 @@
 
 | Valor | Público | Notas |
 |---|---|---|
-| `API_BASE_URL` | Sí | `https://…` |
+| `API_BASE_URL` / `ipv.apiBaseUrl` | Sí | `https://…` (Gradle `BuildConfig`; default inválido) |
 | `TLS_PINS` | Sí | SPKI SHA‑256 (≥ 2, con respaldo) + fecha de caducidad del conjunto |
 | `KEYGEN_ACCOUNT_ID` · `KEYGEN_VERIFY_KEY` | Sí | **Constantes en el código** (recomendación de Keygen ✅); la compilación *release* **falla si están vacías** (práctica heredada de IPV) |
 | `LICENSE_SCHEME` | Sí | Debe coincidir con el `alg` esperado |

@@ -9,16 +9,19 @@ con usuarios, roles y permisos, auditoría completa y **licenciamiento por usuar
 
 ## Estado
 
-**Fase 4 de 10 — web (en curso).** Fases 2–3 (modelo y API) están en el repo; esta fase añade el sitio Next.js con BFF, panel por rol y E2E del ciclo de ficha.
+**Fase 5 de 10 — Android (en curso).** Fases 2–4 están en el repo; esta fase añade la app multimódulo (en línea + caché de lectura) y el evaluador de licencia en `core:domain`.
 
-➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 2:** [`docs/fases/02-modelo-de-datos.md`](docs/fases/02-modelo-de-datos.md) · **Fase 3:** [`docs/fases/03-backend-api.md`](docs/fases/03-backend-api.md) · **Fase 4:** [`docs/fases/04-web.md`](docs/fases/04-web.md)
+➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 4:** [`docs/fases/04-web.md`](docs/fases/04-web.md) · **Fase 5:** [`docs/fases/05-android.md`](docs/fases/05-android.md)
 
 ```bash
-# JDK 21 + Docker (Testcontainers) — Fases 2–3
+# JDK 21 + Docker (Testcontainers) — Fases 2–3 (+ evaluador de licencia)
 gradle test
 
 # Web (Fase 4)
 cd web && npm ci && npm run test:e2e
+
+# Android (Fase 5) — SDK
+cd android && gradle testDebugUnitTest assembleDebug
 ```
 
 | Documento | Contenido |

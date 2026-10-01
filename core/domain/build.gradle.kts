@@ -3,14 +3,18 @@ plugins {
     `java-library`
 }
 
+group = "cu.ipvgc"
+version = "0.5.0"
+
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        // Bytecode 17: el servidor corre en JDK 21 y Android (desugar) lo consume.
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 dependencies {

@@ -1,0 +1,215 @@
+{
+  "alg": "base64+ecdsa-p256",
+  "threshold_days": 7,
+  "cases": [
+    {
+      "id": "valid-online",
+      "expected": "VALID",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-15T00:00:00Z",
+        "providerCode": "VALID",
+        "serverReachable": true,
+        "remainingDays": 90,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "expiring",
+      "expected": "EXPIRING",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-09-01T00:00:00Z",
+        "licenseExpiresAt": "2026-10-05T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "providerCode": "VALID",
+        "serverReachable": true,
+        "remainingDays": 4,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "expired-by-clock",
+      "expected": "EXPIRED",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-09-01T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "providerCode": "VALID",
+        "serverReachable": true,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "expired-provider",
+      "expected": "EXPIRED",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "providerCode": "EXPIRED",
+        "serverReachable": true,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "suspended",
+      "expected": "SUSPENDED",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "providerCode": "SUSPENDED",
+        "serverReachable": true,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "revoked-known",
+      "expected": "REVOKED",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "lastKnownRevoked": true,
+        "serverReachable": false,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "offline-grace",
+      "expected": "OFFLINE_GRACE",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "providerCode": "VALID",
+        "serverReachable": false,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "file-ttl-elapsed",
+      "expected": "DISCONNECTED",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-09-20T00:00:00Z",
+        "serverReachable": false,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "clock-rewound",
+      "expected": "DISCONNECTED",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "serverReachable": false,
+        "wallClock": "2026-01-02T00:00:00Z",
+        "lastSeenWall": "2026-10-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "bad-signature",
+      "expected": "NOT_ACTIVATED",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": false,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "serverReachable": true,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "alg-mismatch",
+      "expected": "NOT_ACTIVATED",
+      "input": {
+        "hasFile": true,
+        "algActual": "none",
+        "signatureValid": true,
+        "fingerprintMatches": true,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "serverReachable": true,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "fingerprint-mismatch",
+      "expected": "NOT_ACTIVATED",
+      "input": {
+        "hasFile": true,
+        "algActual": "base64+ecdsa-p256",
+        "signatureValid": true,
+        "fingerprintMatches": false,
+        "issuedAt": "2026-01-01T00:00:00Z",
+        "licenseExpiresAt": "2026-12-31T00:00:00Z",
+        "fileExpiresAt": "2026-10-10T00:00:00Z",
+        "serverReachable": true,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "no-file",
+      "expected": "DISCONNECTED",
+      "input": {
+        "hasFile": false,
+        "serverReachable": false,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    },
+    {
+      "id": "device-limit",
+      "expected": "DEVICE_LIMIT",
+      "input": {
+        "hasFile": false,
+        "providerCode": "TOO_MANY_MACHINES",
+        "serverReachable": true,
+        "wallClock": "2026-10-01T12:00:00Z"
+      }
+    }
+  ]
+}

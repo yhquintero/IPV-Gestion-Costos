@@ -51,10 +51,11 @@
 - **Criterios**: Playwright recorre borrador→vigente→control; axe sin violaciones críticas; CSP estricta; ZAP *baseline* limpio.
 - **Código**: [docs/fases/04-web.md](fases/04-web.md) · `web/`.
 
-### Fase 5 · Android
+### Fase 5 · Android (en curso)
 
 - **Alcance**: app multimódulo; login/MFA/biometría; catálogo, valores IPV, fichas y controles **en línea con caché de lectura**; Room + SQLCipher; evaluador de licencia con **archivos dorados** (sin proveedor aún).
 - **Criterios**: pruebas instrumentadas; migraciones de Room probadas; lista MASVS L1; el APK **no contiene secretos**; *build* reproducible.
+- **Código**: [docs/fases/05-android.md](fases/05-android.md) · `android/` · `core/domain/.../license`.
 
 ### Fase 6 · Sincronización y offline (ADR‑0001)
 

@@ -98,7 +98,7 @@ En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `to
 | 2 | Esqueleto Gradle (`core`, `server`), migraciones, `tools/seed`, CI base — **hecho** (ver [fases/02](fases/02-modelo-de-datos.md)) |
 | 3 | API en `server/app` (paquetes = módulos), `contracts/openapi`, `GET /audit/verify` — **hecho** (ver [fases/03](fases/03-backend-api.md)) |
 | 4 | `web/` (Next.js + BFF + Playwright) — **hecho** (ver [fases/04](fases/04-web.md)) |
-| 5 | `android/` |
+| 5 | `android/` (multimódulo, `includeBuild` de `core`) — **hecho** (ver [fases/05](fases/05-android.md)) |
 | 6 | Sync (módulo `sync`, `core-data` de Android), suite E‑1…E‑5 |
 | 7 | `deploy/keygen`, módulos `licensing` y `commerce` |
 | 8 | Proveedores de tasas, `tools/mock-eltoque` |
