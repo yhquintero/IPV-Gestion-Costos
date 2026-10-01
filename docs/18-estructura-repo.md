@@ -57,6 +57,8 @@ IPV-Gestion-Costos/
 
 **Por qué dos *builds* Gradle (`core`+`server` y `android`)**: compilar el servidor no debe exigir el SDK de Android. Android incorpora `core:domain` con **`includeBuild("../core")`** (compilación compuesta), de modo que el **mismo código** corre en ambos sin publicarlo.
 
+En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `tools:seed` (sin Android). El *build* Android se añade en la Fase 5 como proyecto aparte.
+
 ## 18.2 Convenciones
 
 | Tema | Regla |
@@ -93,9 +95,9 @@ IPV-Gestion-Costos/
 | Fase | Se crea |
 |---|---|
 | 1 (ahora) | `docs/`, `README.md`, `.gitignore` |
-| 2 | Esqueleto Gradle (`core`, `server`), migraciones, `tools/seed`, CI base |
-| 3 | `server/modules/*`, `contracts/openapi`, `tools/audit-verify` |
-| 4 | `web/` |
+| 2 | Esqueleto Gradle (`core`, `server`), migraciones, `tools/seed`, CI base — **hecho** (ver [fases/02](fases/02-modelo-de-datos.md)) |
+| 3 | API en `server/app` (paquetes = módulos), `contracts/openapi`, `GET /audit/verify` — **hecho** (ver [fases/03](fases/03-backend-api.md)) |
+| 4 | `web/` (Next.js + BFF + Playwright) — **hecho** (ver [fases/04](fases/04-web.md)) |
 | 5 | `android/` |
 | 6 | Sync (módulo `sync`, `core-data` de Android), suite E‑1…E‑5 |
 | 7 | `deploy/keygen`, módulos `licensing` y `commerce` |

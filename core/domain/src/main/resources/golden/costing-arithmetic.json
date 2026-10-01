@@ -1,0 +1,54 @@
+{
+  "policy": {
+    "line_rounding": "HALF_UP",
+    "cent_scale": 2,
+    "source": "docs/06-flujo-ficha-ipv.md §6.10 / ADR-0007"
+  },
+  "cases": [
+    {
+      "id": "half-up-up",
+      "quantity": "1.005",
+      "unit_cost": "10.00",
+      "currency": "CUP",
+      "expected_line": "10.05"
+    },
+    {
+      "id": "half-up-stay",
+      "quantity": "1.004",
+      "unit_cost": "10.00",
+      "currency": "CUP",
+      "expected_line": "10.04"
+    },
+    {
+      "id": "exact-cents",
+      "quantity": "2",
+      "unit_cost": "12.50",
+      "currency": "CUP",
+      "expected_line": "25.00"
+    },
+    {
+      "id": "fractional-qty",
+      "quantity": "0.333333",
+      "unit_cost": "3.00",
+      "currency": "CUP",
+      "expected_line": "1.00"
+    },
+    {
+      "id": "zero-qty",
+      "quantity": "0",
+      "unit_cost": "99.99",
+      "currency": "CUP",
+      "expected_line": "0.00"
+    }
+  ],
+  "totals": [
+    {
+      "id": "sum-already-rounded-lines",
+      "currency": "CUP",
+      "lines": ["10.05", "10.04", "25.00"],
+      "expected_total": "45.09",
+      "yield": "3",
+      "expected_unit_cost": "15.03"
+    }
+  ]
+}

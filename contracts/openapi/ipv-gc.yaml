@@ -1,0 +1,262 @@
+openapi: 3.1.0
+info:
+  title: IPV Gestión de Costos API
+  version: 0.3.0
+  description: |
+    Contrato Fase 3. Autenticación Bearer JWT (EdDSA).
+    Errores `application/problem+json`. Mutaciones aceptan `Idempotency-Key` y `If-Match`.
+servers:
+  - url: /api/v1
+tags:
+  - name: auth
+  - name: tenancy
+  - name: catalog
+  - name: ipv-values
+  - name: cost-sheets
+  - name: ipv-controls
+  - name: rates
+  - name: audit
+  - name: notifications
+  - name: reports
+paths:
+  /auth/login:
+    post:
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+                organization_id: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Tokens o desafío MFA
+        "401":
+          description: Credenciales inválidas (respuesta uniforme)
+  /auth/refresh:
+    post:
+      tags: [auth]
+      security: []
+      responses:
+        "200": { description: Rotación de refresh }
+  /auth/logout:
+    post:
+      tags: [auth]
+      responses:
+        "204": { description: Sesión revocada }
+  /me:
+    get:
+      tags: [auth]
+      responses:
+        "200": { description: Usuario actual y permisos }
+  /companies:
+    get:
+      tags: [tenancy]
+      responses:
+        "200": { description: Empresas de la organización }
+  /branches:
+    get:
+      tags: [tenancy]
+      responses:
+        "200": { description: Sucursales }
+  /categories:
+    get:
+      tags: [catalog]
+      responses:
+        "200": { description: Categorías }
+    post:
+      tags: [catalog]
+      responses:
+        "201": { description: Creada }
+  /raw-materials:
+    get:
+      tags: [catalog]
+      responses:
+        "200": { description: Insumos }
+    post:
+      tags: [catalog]
+      responses:
+        "201": { description: Creado }
+  /products:
+    get:
+      tags: [catalog]
+      responses:
+        "200": { description: Productos }
+    post:
+      tags: [catalog]
+      responses:
+        "201": { description: Creado }
+  /products/{id}:
+    get:
+      tags: [catalog]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200": { description: Producto }
+        "404": { description: No encontrado (también IDOR) }
+  /units:
+    get:
+      tags: [catalog]
+      responses:
+        "200": { description: Unidades }
+  /ipv-values:
+    get:
+      tags: [ipv-values]
+      responses:
+        "200": { description: Valores IPV }
+    post:
+      tags: [ipv-values]
+      responses:
+        "201": { description: Creado }
+        "409": { description: Solape de vigencia }
+  /cost-sheets:
+    get:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: Fichas }
+    post:
+      tags: [cost-sheets]
+      responses:
+        "201": { description: Ficha + borrador }
+  /cost-sheets/{sheetId}/versions/{versionId}:
+    get:
+      tags: [cost-sheets]
+      parameters:
+        - in: path
+          name: sheetId
+          required: true
+          schema: { type: string, format: uuid }
+        - in: path
+          name: versionId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Versión (ETag = version)
+          headers:
+            ETag:
+              schema: { type: string }
+    patch:
+      tags: [cost-sheets]
+      parameters:
+        - in: header
+          name: If-Match
+          schema: { type: string }
+      responses:
+        "200": { description: Borrador actualizado }
+        "409": { description: Congelado o conflicto de versión }
+  /cost-sheets/{sheetId}/versions/{versionId}/prevalidate:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: Hallazgos de reglas v1 }
+  /cost-sheets/{sheetId}/versions/{versionId}/submit:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: EN_REVISION, instantánea de tasas congelada }
+        "422": { description: Reglas bloqueantes }
+  /cost-sheets/{sheetId}/versions/{versionId}/validate:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: VALIDADA }
+        "403": { description: Cuatro ojos }
+  /cost-sheets/{sheetId}/versions/{versionId}/approve:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: APROBADA }
+  /cost-sheets/{sheetId}/versions/{versionId}/activate:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: VIGENTE; la anterior pasa a REEMPLAZADA }
+  /cost-sheets/{sheetId}/versions/{versionId}/return:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: Vuelve a BORRADOR }
+  /cost-sheets/{sheetId}/versions/{versionId}/annul:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: ANULADA }
+  /cost-sheets/{sheetId}/versions:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "201": { description: Nueva versión en BORRADOR }
+  /ipv-controls:
+    get:
+      tags: [ipv-controls]
+      responses:
+        "200": { description: Controles }
+    post:
+      tags: [ipv-controls]
+      responses:
+        "201": { description: Control numerado por el servidor }
+  /ipv-controls/{id}/lines:
+    post:
+      tags: [ipv-controls]
+      responses:
+        "200": { description: Línea (I-09) }
+        "422": { description: Versión no vigente para el período }
+  /ipv-controls/{id}/close:
+    post:
+      tags: [ipv-controls]
+      responses:
+        "200": { description: VALIDADO o CON_DIFERENCIAS }
+  /rates/current:
+    get:
+      tags: [rates]
+      responses:
+        "200": { description: Tasas vigentes etiquetadas }
+  /rates/manual:
+    post:
+      tags: [rates]
+      responses:
+        "201": { description: Tasa manual con motivo }
+  /audit:
+    get:
+      tags: [audit]
+      responses:
+        "200": { description: Eventos }
+  /audit/verify:
+    get:
+      tags: [audit]
+      responses:
+        "200": { description: Verificación de hashes y bloques }
+  /notifications:
+    get:
+      tags: [notifications]
+      responses:
+        "200": { description: Bandeja }
+  /reports/cost-sheets:
+    get:
+      tags: [reports]
+      responses:
+        "200": { description: Reporte básico }
+  /openapi.yaml:
+    get:
+      tags: [auth]
+      security: []
+      responses:
+        "200": { description: Este contrato }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []

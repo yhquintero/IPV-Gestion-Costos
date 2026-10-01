@@ -9,9 +9,17 @@ con usuarios, roles y permisos, auditoría completa y **licenciamiento por usuar
 
 ## Estado
 
-**Fase 1 de 10 — análisis de arquitectura (propuesto para validación).** Todavía **no hay código de producto**: el prompt maestro exige validar el diseño antes de implementarlo, por fases y de forma verificable.
+**Fase 4 de 10 — web (en curso).** Fases 2–3 (modelo y API) están en el repo; esta fase añade el sitio Next.js con BFF, panel por rol y E2E del ciclo de ficha.
 
-➡️ **Empieza aquí: [`docs/README.md`](docs/README.md)** — resumen ejecutivo, los 20 entregables del análisis, el ADR que reemplaza el aplazamiento de offline/multi‑sucursal y las decisiones que necesitan tu respuesta.
+➡️ **Diseño:** [`docs/README.md`](docs/README.md) · **Fase 2:** [`docs/fases/02-modelo-de-datos.md`](docs/fases/02-modelo-de-datos.md) · **Fase 3:** [`docs/fases/03-backend-api.md`](docs/fases/03-backend-api.md) · **Fase 4:** [`docs/fases/04-web.md`](docs/fases/04-web.md)
+
+```bash
+# JDK 21 + Docker (Testcontainers) — Fases 2–3
+gradle test
+
+# Web (Fase 4)
+cd web && npm ci && npm run test:e2e
+```
 
 | Documento | Contenido |
 |---|---|

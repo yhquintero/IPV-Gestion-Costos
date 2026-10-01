@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fbfaf6;
+  color: #13241c;
+  font-feature-settings: "ss01" on, "tnum" on;
+}
+
+.paper-grid {
+  background-image:
+    linear-gradient(180deg, rgba(251, 250, 246, 0.92), rgba(243, 238, 228, 0.88)),
+    linear-gradient(#e7dfd0 1px, transparent 1px),
+    linear-gradient(90deg, #e7dfd0 1px, transparent 1px);
+  background-size: auto, 28px 28px, 28px 28px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 50;
+  background: #13241c;
+  color: #fbfaf6;
+  padding: 0.5rem 0.75rem;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+:focus-visible {
+  outline: 3px solid #b8893a;
+  outline-offset: 2px;
+}

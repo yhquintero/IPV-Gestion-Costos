@@ -23,6 +23,7 @@ service-account*.json
 
 # ───────── JVM / Gradle / Android ─────────
 .gradle/
+.kotlin/
 build/
 out/
 *.class

@@ -4,6 +4,8 @@
 
 **Importante**: este documento **no responde** las preguntas abiertas del §37 del prompt maestro (corresponde al propietario). Aquí se listan las decisiones **adicionales o complementarias** que surgieron del análisis. La columna *Recomendación* es una **propuesta técnica provisional**, no una decisión. Todo lo marcado ⛔ **PENDIENTE DE DEFINICIÓN** sigue así hasta que el propietario o una fuente normativa lo confirme.
 
+**Fase 2 (2026‑10‑01):** para desbloquear el esquema se adoptaron como *defaults* (ADR reemplazable) **D‑01, D‑03, D‑07, D‑15, D‑16, D‑24, D‑25, D‑27, D‑31** → [ADR‑0002…0007](adr/README.md). Siguen ⛔ **D‑02, D‑04, D‑05, D‑06** (norma, token elTOQUE, dictamen legal/hosting).
+
 ## 16.1 Las decisiones que condicionan todo lo demás (resolver primero)
 
 | Orden | Decisiones | Por qué bloquean |

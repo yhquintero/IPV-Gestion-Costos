@@ -27,26 +27,29 @@
 
 ## 19.3 Detalle
 
-### Fase 1 · Análisis y validación (actual)
+### Fase 1 · Análisis y validación (entregada)
 
 - **Alcance**: este paquete; ADR‑0001; decisiones D‑xx; consultas externas (token y términos de elTOQUE, dictamen sobre Keygen y hosting).
 - **Tras la validación del diseño**: *spikes* [S‑1 a S‑7](#spikes) (prototipos **descartables**, no producto).
 - **Gate**: validación del propietario; decisiones prioritarias resueltas ([§16.1](16-decisiones-pendientes.md#161-las-decisiones-que-condicionan-todo-lo-demás-resolver-primero)).
 
-### Fase 2 · Modelo de datos
+### Fase 2 · Modelo de datos (en curso)
 
 - **Alcance**: esqueleto Gradle (`core`, `server`); migraciones Flyway; RLS forzado; *triggers* de inmutabilidad; generador de semillas sintéticas; `core:domain` con `Money`/redondeo y vectores dorados; CI base; ADR‑0002…0007 según decisiones.
 - **Criterios**: cada invariante I‑01…I‑20 con **prueba en Testcontainers**; pruebas de propiedades de dinero; migraciones reproducibles desde cero.
+- **Código**: [docs/fases/02-modelo-de-datos.md](fases/02-modelo-de-datos.md) · `core/domain` · `server/db/migration` · `server/app` · `tools/seed`.
 
-### Fase 3 · Backend/API
+### Fase 3 · Backend/API (en curso)
 
 - **Alcance**: identidad (Argon2id, MFA, sesiones), acceso (RBAC+ABAC), tenencia, catálogo, valores IPV, **ciclo de vida de la ficha** (7 estados), reglas v1, aprobaciones, Control IPV (`CONSISTENCIA` y `DERIVA_COSTOS`), auditoría con bloques firmados, **puerto de tasas + tasa manual**, notificaciones básicas, reportes básicos, OpenAPI, `Idempotency-Key`, `ETag`.
 - **Criterios**: contrato verde; **los comportamientos cubiertos por las 123 pruebas de IPV reproducidos como casos de aceptación**; pruebas IDOR por endpoint; `GET /audit/verify` sin rupturas; ASVS L2 (parcial) documentado.
+- **Código**: [docs/fases/03-backend-api.md](fases/03-backend-api.md) · `contracts/openapi/ipv-gc.yaml` · `server/app`.
 
-### Fase 4 · Web
+### Fase 4 · Web (en curso)
 
 - **Alcance**: BFF y sesión; panel por rol (catálogo, valores IPV, fichas con flujo, controles, tasas, usuarios, auditoría, estado de licencia); sitio público con precios en USD y **CUP derivado etiquetado** (con tasa manual/de prueba hasta la Fase 8).
 - **Criterios**: Playwright recorre borrador→vigente→control; axe sin violaciones críticas; CSP estricta; ZAP *baseline* limpio.
+- **Código**: [docs/fases/04-web.md](fases/04-web.md) · `web/`.
 
 ### Fase 5 · Android
 

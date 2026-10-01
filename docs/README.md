@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | **Propuesto para validación del propietario** — no hay código de producto |
+| **Estado** | Fase 1 entregada · Fases 2–3 en el repo · **Fase 4 web en curso** — [fases/04](fases/04-web.md) |
 | **Fecha** | 2026‑10‑01 |
 | **Objetivo del producto** | Unir `IPV_Fichas-Costos` e `inventario` (Cuadre Pinar) en **un solo sitio web HTTPS profesional** y **una sola app Android (Kotlin)**, con usuarios, roles, HTTPS y licenciamiento Keygen por usuario |
 | **Prioridades** | Seguridad > Trazabilidad > Corrección de datos > Mantenibilidad > Offline > Rendimiento > Estética |
@@ -79,7 +79,7 @@ Identificadores: `C‑xx` conflictos · `D‑xx` decisiones pendientes · `R‑x
 
 ## Alcance y límites de esta fase
 
-- **No se escribió código de producto**, no se llamó a elTOQUE ni a Keygen, no se compiló Android y **no se importó ningún dato real ni credencial** de los repos origen.
+- **Fase 1** no escribió código de producto. **Fase 2** añade el esqueleto Gradle, las migraciones y `core:domain` ([fases/02](fases/02-modelo-de-datos.md)). No se llamó a elTOQUE ni a Keygen, no se compiló Android y **no se importó ningún dato real ni credencial** de los repos origen.
 - Los **§36 (30 criterios de aceptación) y §37 (preguntas abiertas)** del prompt maestro **no se reproducen ni se responden aquí**: la matriz de trazabilidad con el §36 y el cruce con el §37 se hacen al validar el diseño.
 - Ninguna norma, fórmula contable ni endpoint de terceros se inventa: lo desconocido está marcado ⛔ y lo verificado tiene su fuente en el [anexo B](anexos/B-fuentes-y-verificaciones.md).
 - Los valores de tasas de prueba (30/09/2026 12:57) son **semilla**, no constantes.

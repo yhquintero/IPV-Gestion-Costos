@@ -154,6 +154,17 @@
 | `PLAY_SERVICE_ACCOUNT_JSON` | **S** | Solo si se publica en Play ([D‑19](16-decisiones-pendientes.md#d-19)) |
 | `DOMAIN` · `ACME_EMAIL` · `ACME_CA` | — | Caddy/TLS |
 
+## 20.5b Sitio web (BFF · Fase 4)
+
+El navegador **no** recibe tokens JWT. El BFF guarda `ipv_access` / `ipv_refresh` HttpOnly y un `ipv_csrf` legible para el patrón de doble envío.
+
+| Variable | S | Ejemplo | Notas |
+|---|---|---|---|
+| `API_URL` | — | `http://127.0.0.1:8080` | Vacío = almacén de demostración. **Obligatoria** si `APP_ENV=prod` |
+| `MOCK_API` | — | `1` | Fuerza el almacén de demostración (nunca en prod) |
+| `COOKIE_SECURE` | — | `true` | Cookies `Secure`; en prod se activa también por `APP_ENV` |
+| `APP_BASE_URL` | — | `https://app.ejemplo.tld` | Enlaces absolutos (prueba, correos) |
+
 ## 20.6 Gestión
 
 | Tema | Práctica 🧭 |

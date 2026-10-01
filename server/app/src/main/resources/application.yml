@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: ipv-gestion-costos
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    user: ${DB_MIGRATOR_USER:${DB_APP_USER:ipvgc}}
+    password: ${DB_MIGRATOR_PASSWORD:${DB_APP_PASSWORD:ipvgc}}
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ipvgc}
+    username: ${DB_APP_USER:ipvgc}
+    password: ${DB_APP_PASSWORD:ipvgc}
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-stacktrace: never
+    include-message: never
+
+ipvgc:
+  env: ${APP_ENV:dev}
+  jwt:
+    access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:900}
+  refresh:
+    pepper: ${REFRESH_TOKEN_HMAC_PEPPER:dev-only-change-me}

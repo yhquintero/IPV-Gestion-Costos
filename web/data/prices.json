@@ -1,0 +1,12 @@
+{
+  "currency": "USD",
+  "note": "Catálogo inicial del prompt; editable en Fase 7. No es una tarifa legal.",
+  "plans": [
+    { "code": "IPV-MENSUAL", "name": "Mensual", "duration_days": 30, "price_usd": 25 },
+    { "code": "IPV-TRIMESTRAL", "name": "Trimestral", "duration_days": 90, "price_usd": 75 },
+    { "code": "IPV-SEMESTRAL", "name": "Semestral", "duration_days": 180, "price_usd": 195 },
+    { "code": "IPV-ANUAL", "name": "Anual", "duration_days": 365, "price_usd": 360 },
+    { "code": "IPV-BIENAL", "name": "Bienal", "duration_days": 730, "price_usd": 600 },
+    { "code": "IPV-TRIENAL", "name": "Trienal", "duration_days": 1095, "price_usd": 1020 }
+  ]
+}
