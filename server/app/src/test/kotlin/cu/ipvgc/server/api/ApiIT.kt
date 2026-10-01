@@ -17,8 +17,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
+import org.springframework.core.env.MapPropertySource
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.support.TestPropertyValues
 import java.security.Security
 import java.sql.DriverManager
 import java.util.UUID
@@ -50,14 +50,19 @@ class ApiIT {
                     ps.executeUpdate()
                 }
             }
-            TestPropertyValues.of(
-                "spring.datasource.url=${pg.jdbcUrl}",
-                "spring.datasource.username=app_rw",
-                "spring.datasource.password=app",
-                "spring.flyway.user=${pg.username}",
-                "spring.flyway.password=${pg.password}",
-                "ipvgc.env=test",
-            ).applyTo(applicationContext)
+            applicationContext.environment.propertySources.addFirst(
+                MapPropertySource(
+                    "testcontainers",
+                    mapOf(
+                        "spring.datasource.url" to pg.jdbcUrl,
+                        "spring.datasource.username" to "app_rw",
+                        "spring.datasource.password" to "app",
+                        "spring.flyway.user" to pg.username,
+                        "spring.flyway.password" to pg.password,
+                        "ipvgc.env" to "test",
+                    ),
+                ),
+            )
         }
     }
 

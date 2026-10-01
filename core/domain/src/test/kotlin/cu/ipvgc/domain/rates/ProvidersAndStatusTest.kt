@@ -44,7 +44,7 @@ class ProvidersAndStatusTest {
         val r = cached.fetch()
         assertTrue(r.servedFromCache)
         assertEquals(last, r.quotes)
-        assertEquals(BigDecimal("442.0"), r.quotes.first { it.instrument.code == "USD" }.value)
+        assertEquals(0, BigDecimal("442").compareTo(r.quotes.first { it.instrument.code == "USD" }.value))
     }
 
     @Test
