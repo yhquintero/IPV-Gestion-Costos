@@ -17,7 +17,7 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
-    implementation(libs.spring.boot.starter.flyway)
+    implementation(libs.flyway.core)
     implementation(libs.flyway.postgresql)
     implementation(libs.postgresql)
     implementation(libs.nimbus.jose.jwt)
