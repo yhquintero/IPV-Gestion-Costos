@@ -69,10 +69,11 @@
 - **Criterios**: evaluador de estados **dirigido por tabla** (los 7 estados + orden de evaluación); conciliación de renovaciones; pruebas con proveedor simulado **y** con Keygen real/CE (según D‑05).
 - **Código**: [docs/fases/07-licencias.md](fases/07-licencias.md) · `core/domain/.../license` · `server/.../licensing` · `commerce` · `deploy/keygen`. Cloud ⛔ D-05.
 
-### Fase 8 · elTOQUE
+### Fase 8 · elTOQUE (en curso)
 
 - **Alcance**: `ElToqueApiProvider`, `CachedProvider`, planificador con líder, validación, estados, etiquetas, alertas, instantáneas, servidor simulado.
 - **Criterios**: pruebas de contrato con *fixtures* reales saneados; inyección de fallos; lista de cumplimiento de términos; D‑04 respondida.
+- **Código**: [docs/fases/08-eltoque.md](fases/08-eltoque.md) · `core/domain/.../rates` · `server/.../rates` · `tools/mock-eltoque`. API live ⛔ D-04.
 
 ### Fase 9 · Pruebas y endurecimiento
 

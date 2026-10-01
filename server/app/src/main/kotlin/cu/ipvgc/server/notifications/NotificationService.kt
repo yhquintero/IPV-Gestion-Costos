@@ -1,5 +1,6 @@
 package cu.ipvgc.server.notifications
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import cu.ipvgc.server.security.currentUser
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
@@ -10,6 +11,22 @@ import java.util.UUID
 
 @Service
 class NotificationService(private val jdbc: JdbcTemplate) {
+    private val mapper = jacksonObjectMapper()
+
+    fun notifyPlatformAdmins(type: String, payload: Map<String, Any?>) {
+        jdbc.update(
+            """
+            INSERT INTO notifications (organization_id, user_id, type, payload)
+            SELECT a.organization_id, a.user_id, ?, ?::jsonb
+              FROM role_assignments a
+              JOIN roles r ON r.id = a.role_id
+             WHERE r.code = 'PLATFORM_ADMIN' AND a.deleted_at IS NULL
+            """.trimIndent(),
+            type,
+            mapper.writeValueAsString(payload),
+        )
+    }
+
     fun notifyRole(roleCode: String, type: String, entityId: UUID) {
         val org = currentUser().organizationId
         jdbc.update(

@@ -24,7 +24,11 @@ class RatesViewModel @Inject constructor(private val repo: RateRepository) : Vie
     init {
         viewModelScope.launch {
             when (val live = repo.current(true)) {
-                is Outcome.Ok -> _state.value = RatesUi(live.value.map { "${it.instrument} ${it.value} · ${it.label ?: ""}" })
+                is Outcome.Ok ->
+                    _state.value =
+                        RatesUi(
+                            live.value.map { "${it.instrument} ${it.value} · ${it.label ?: "Tasa de referencia, no oficial"}" },
+                        )
                 is Outcome.Err -> _state.value = RatesUi(error = live.message)
             }
         }
@@ -36,7 +40,7 @@ fun RatesRoute(vm: RatesViewModel = hiltViewModel()) {
     val s by vm.state.collectAsState()
     SimpleList(
         title = "Tasas",
-        subtitle = "Tasa de referencia, no oficial. Semilla de prueba hasta la Fase 8.",
+        subtitle = "Tasa de referencia, no oficial. Fuente: elTOQUE o DATOS DE PRUEBA. Nunca tasa oficial.",
         error = s.error,
         rows = s.rows,
     )

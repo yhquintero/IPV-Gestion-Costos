@@ -123,8 +123,8 @@ class RateRepository @Inject constructor(
 ) {
     suspend fun current(forceNetwork: Boolean = true): Outcome<List<RateEntity>> {
         if (forceNetwork) {
-            val res = runCatching { api.rates() }.getOrElse { return Outcome.Err(it.message ?: "network") }
-            if (res.isSuccessful) {
+            val res = runCatching { api.rates() }.getOrNull()
+            if (res != null && res.isSuccessful) {
                 val now = System.currentTimeMillis()
                 db.rates().upsertAll(
                     res.body().orEmpty().map {
@@ -133,6 +133,8 @@ class RateRepository @Inject constructor(
                 )
             }
         }
-        return Outcome.Ok(db.rates().all())
+        val cached = db.rates().all()
+        if (cached.isEmpty()) return Outcome.Err("Tasa no disponible")
+        return Outcome.Ok(cached)
     }
 }

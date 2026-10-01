@@ -21,5 +21,5 @@ Qué tasa congela una ficha es [D‑03]. No hay token de elTOQUE ([D‑04]). Hay
 
 ## Consecuencias
 
-- El puerto de tasas y la tasa manual se usan en Fase 3; el proveedor real en Fase 8.
+- El puerto de tasas y la tasa manual se usan en Fase 3; Fase 8 añade parser, MOCK/SEED, caché y planificador. Live API ⛔ D-04.
 - CAD/MXN/ZELLE/CLA existen como instrumentos; si la API no los entrega, solo hay tasa manual.

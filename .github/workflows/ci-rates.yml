@@ -1,0 +1,36 @@
+name: ci-rates
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "core/domain/src/main/kotlin/cu/ipvgc/domain/rates/**"
+      - "core/domain/src/test/kotlin/cu/ipvgc/domain/rates/**"
+      - "server/app/src/main/kotlin/cu/ipvgc/server/rates/**"
+      - "server/db/migration/V14*"
+      - "tools/mock-eltoque/**"
+      - ".github/workflows/ci-rates.yml"
+  pull_request:
+    paths:
+      - "core/domain/src/main/kotlin/cu/ipvgc/domain/rates/**"
+      - "core/domain/src/test/kotlin/cu/ipvgc/domain/rates/**"
+      - "server/app/src/main/kotlin/cu/ipvgc/server/rates/**"
+      - "server/db/migration/V14*"
+      - "tools/mock-eltoque/**"
+      - ".github/workflows/ci-rates.yml"
+
+jobs:
+  contract:
+    name: Parser + Fake elTOQUE (no live API)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+      - name: Suite tasas
+        run: gradle :core:domain:test --tests "cu.ipvgc.domain.rates.*" --no-daemon

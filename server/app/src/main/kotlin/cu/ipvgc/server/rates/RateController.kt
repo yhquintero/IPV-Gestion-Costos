@@ -1,5 +1,9 @@
 package cu.ipvgc.server.rates
 
+import cu.ipvgc.domain.rates.RateLabels
+import cu.ipvgc.domain.rates.RateSource
+import cu.ipvgc.domain.rates.RateStatus
+import cu.ipvgc.domain.rates.RateVariationMath
 import cu.ipvgc.server.audit.AuditService
 import cu.ipvgc.server.security.currentUser
 import cu.ipvgc.server.web.ApiException
@@ -7,12 +11,15 @@ import org.springframework.http.HttpStatus
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
+import java.time.Instant
 import java.util.UUID
 
 data class ManualRateRequest(
@@ -22,33 +29,153 @@ data class ManualRateRequest(
 )
 
 @RestController
-@RequestMapping("/api/v1/rates")
+@RequestMapping("/api/v1")
 class RateController(
     private val jdbc: JdbcTemplate,
     private val audit: AuditService,
 ) {
-    @GetMapping("/current")
+    @GetMapping("/rates/current")
     fun current(): List<Map<String, Any?>> = jdbc.query(
         """
-        SELECT c.instrument_code, s.value, c.status, s.source, s.is_test, s.fetched_at, s.id AS sample_id
+        SELECT c.instrument_code, s.value, c.status, s.source, s.is_test, s.fetched_at, s.id AS sample_id,
+               s.anomaly,
+               (SELECT s2.value FROM exchange_rate_samples s2
+                 WHERE s2.instrument_code = c.instrument_code AND s2.id <> s.id
+                 ORDER BY s2.fetched_at DESC LIMIT 1) AS prev_value
           FROM exchange_rate_current c
           JOIN exchange_rate_samples s ON s.id = c.sample_id
          ORDER BY c.instrument_code
         """.trimIndent(),
     ) { rs, _ ->
+        val source = RateSource.valueOf(rs.getString("source"))
+        val status = RateStatus.valueOf(rs.getString("status"))
+        val test = rs.getBoolean("is_test")
+        val fetched = rs.getTimestamp("fetched_at").toInstant()
+        val value = rs.getBigDecimal("value")
+        val prev = rs.getBigDecimal("prev_value")
+        val variation = RateVariationMath.of(value, prev)
+        val age = Instant.now().epochSecond - fetched.epochSecond
         mapOf(
             "instrument" to rs.getString("instrument_code"),
-            "value" to rs.getBigDecimal("value"),
-            "status" to rs.getString("status"),
-            "source" to rs.getString("source"),
-            "is_test" to rs.getBoolean("is_test"),
-            "fetched_at" to rs.getTimestamp("fetched_at").toInstant(),
+            "base" to "CUP",
+            "value" to value.toPlainString(),
+            "label" to RateLabels.compose(source, status, test, fetched.toString()),
+            "disclaimer" to RateLabels.UNOFFICIAL,
+            "source" to source.name,
+            "status" to status.name,
+            "is_test" to test,
+            "source_timestamp" to null,
+            "fetched_at" to fetched,
+            "age_seconds" to age,
             "sample_id" to rs.getObject("sample_id"),
-            "label" to label(rs.getString("source"), rs.getString("status"), rs.getBoolean("is_test")),
+            "anomaly" to rs.getBoolean("anomaly"),
+            "variation" to variation?.let {
+                mapOf(
+                    "absolute" to it.absolute.toPlainString(),
+                    "percent" to it.percent.toPlainString(),
+                    "note" to "respecto a la muestra anterior almacenada",
+                )
+            },
         )
     }
 
-    @PostMapping("/manual")
+    @GetMapping("/rates/history")
+    fun history(
+        @RequestParam instrument: String,
+        @RequestParam(defaultValue = "50") limit: Int,
+    ): List<Map<String, Any?>> =
+        jdbc.query(
+            """
+            SELECT id, value, source, status_proxy, fetched_at, is_test, anomaly
+              FROM (
+                SELECT s.id, s.value, s.source, s.fetched_at, s.is_test, s.anomaly,
+                       c.status AS status_proxy
+                  FROM exchange_rate_samples s
+                  LEFT JOIN exchange_rate_current c ON c.sample_id = s.id
+                 WHERE s.instrument_code = ?
+                 ORDER BY s.fetched_at DESC
+                 LIMIT ?
+              ) x
+            """.trimIndent(),
+            { rs, _ ->
+                mapOf(
+                    "id" to rs.getObject("id"),
+                    "value" to rs.getBigDecimal("value").toPlainString(),
+                    "source" to rs.getString("source"),
+                    "fetched_at" to rs.getTimestamp("fetched_at").toInstant(),
+                    "is_test" to rs.getBoolean("is_test"),
+                    "anomaly" to rs.getBoolean("anomaly"),
+                )
+            },
+            instrument,
+            limit.coerceIn(1, 200),
+        )
+
+    @GetMapping("/rates/status")
+    fun providerStatus(): Map<String, Any?> {
+        val user = currentUser()
+        if ("PLATFORM_ADMIN" !in user.roles && "ORG_ADMIN" !in user.roles) {
+            throw ApiException.forbidden("forbidden", "admin required")
+        }
+        val state =
+            jdbc.query(
+                "SELECT paused, pause_reason, last_success_at, last_outcome, last_http_status, ratelimit_remaining, consecutive_failures FROM rate_provider_state WHERE provider = 'ELTOQUE'",
+            ) { rs, _ ->
+                mapOf(
+                    "paused" to rs.getBoolean("paused"),
+                    "pause_reason" to rs.getString("pause_reason"),
+                    "last_success_at" to rs.getTimestamp("last_success_at")?.toInstant(),
+                    "last_outcome" to rs.getString("last_outcome"),
+                    "last_http_status" to rs.getObject("last_http_status"),
+                    "ratelimit_remaining" to rs.getObject("ratelimit_remaining"),
+                    "consecutive_failures" to rs.getInt("consecutive_failures"),
+                )
+            }.firstOrNull() ?: emptyMap()
+        val lastRun =
+            jdbc.query(
+                "SELECT outcome, http_status, started_at, finished_at, unknown_keys FROM rate_provider_runs ORDER BY started_at DESC LIMIT 1",
+            ) { rs, _ ->
+                mapOf(
+                    "outcome" to rs.getString("outcome"),
+                    "http_status" to rs.getObject("http_status"),
+                    "started_at" to rs.getTimestamp("started_at")?.toInstant(),
+                    "unknown_keys" to rs.getString("unknown_keys"),
+                )
+            }.firstOrNull()
+        return mapOf("provider" to "ELTOQUE", "state" to state, "last_run" to lastRun, "d04" to "pending")
+    }
+
+    @GetMapping("/rate-snapshots/{id}")
+    fun snapshot(@PathVariable id: UUID): Map<String, Any?> {
+        val head =
+            jdbc.query(
+                "SELECT id, captured_at, status_at_capture, is_test FROM rate_snapshots WHERE id = ?",
+                { rs, _ ->
+                    mapOf(
+                        "id" to rs.getObject("id"),
+                        "captured_at" to rs.getTimestamp("captured_at")?.toInstant(),
+                        "status_at_capture" to rs.getString("status_at_capture"),
+                        "is_test" to rs.getBoolean("is_test"),
+                    )
+                },
+                id,
+            ).firstOrNull() ?: throw ApiException.notFound("rate_snapshot")
+        val items =
+            jdbc.query(
+                "SELECT instrument_code, value, sample_id FROM rate_snapshot_items WHERE snapshot_id = ?",
+                { rs, _ ->
+                    mapOf(
+                        "instrument" to rs.getString(1),
+                        "value" to rs.getBigDecimal(2).toPlainString(),
+                        "sample_id" to rs.getObject(3),
+                    )
+                },
+                id,
+            )
+        return head + mapOf("items" to items, "disclaimer" to RateLabels.UNOFFICIAL)
+    }
+
+    @PostMapping("/rates/manual")
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     fun manual(@RequestBody body: ManualRateRequest): Map<String, Any?> {
@@ -76,20 +203,9 @@ class RateController(
         return mapOf(
             "id" to id,
             "instrument" to body.instrument_code,
-            "value" to body.value,
+            "value" to body.value.toPlainString(),
             "status" to "MANUAL",
-            "label" to "Tasa de referencia, no oficial · FUENTE: MANUAL",
+            "label" to RateLabels.compose(RateSource.MANUAL, RateStatus.MANUAL, false),
         )
-    }
-
-    private fun label(source: String, status: String, test: Boolean): String {
-        val base = when (source) {
-            "ELTOQUE_API" -> "Tasa de referencia de elTOQUE · Tasa de referencia, no oficial"
-            "MANUAL" -> "Tasa de referencia, no oficial · FUENTE: MANUAL"
-            else -> "DATOS DE PRUEBA · Tasa de referencia, no oficial"
-        }
-        val stale = if (status == "CACHED" || status == "STALE") " · ESTADO: DATOS EN CACHÉ" else ""
-        val t = if (test) " · DATOS DE PRUEBA" else ""
-        return base + stale + t
     }
 }

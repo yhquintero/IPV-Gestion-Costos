@@ -22,6 +22,7 @@ const LINKS: Array<{ href: string; label: string; perm?: string; platform?: bool
   { href: "/plataforma/precios", label: "Catálogo", platform: true },
   { href: "/plataforma/contratos", label: "Contratos", platform: true },
   { href: "/plataforma/licencias", label: "Licencias org.", platform: true },
+  { href: "/plataforma/tasas", label: "Proveedor tasas", platform: true },
 ];
 
 export function PanelShell({ me, children }: { me: Me; children: React.ReactNode }) {

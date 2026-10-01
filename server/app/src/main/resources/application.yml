@@ -24,6 +24,13 @@ ipvgc:
   keygen:
     mode: ${KEYGEN_MODE:FAKE}
     webhook-secret: ${KEYGEN_WEBHOOK_SECRET:fake-webhook-secret}
+  eltoque:
+    mode: ${ELTOQUE_PROVIDER_MODE:SEED}
+    api-url: ${ELTOQUE_API_URL:https://tasas.eltoque.com}
+    api-key: ${ELTOQUE_API_KEY:}
+    refresh-interval-ms: ${ELTOQUE_REFRESH_INTERVAL_MS:300000}
+    fresh-window-seconds: ${ELTOQUE_FRESH_WINDOW_SECONDS:600}
+    timeout-ms: ${ELTOQUE_TIMEOUT_MS:10000}
   jwt:
     access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:900}
   refresh:

@@ -1,12 +1,13 @@
 openapi: 3.1.0
 info:
   title: IPV Gestión de Costos API
-  version: 0.7.0
+  version: 0.8.0
   description: |
-    Contrato Fases 3–7. Autenticación Bearer JWT (EdDSA).
+    Contrato Fases 3–8. Autenticación Bearer JWT (EdDSA).
     Errores `application/problem+json`. Mutaciones aceptan `Idempotency-Key` y `If-Match`.
     Sync: POST /sync/push, GET /sync/changes, GET /sync/bootstrap.
     Licencias: Fake LicenseProvider (KEYGEN_MODE=FAKE). Cloud bloqueado hasta D-05.
+    Tasas: ExchangeRateProvider + MOCK/SEED; API live bloqueada hasta D-04.
 servers:
   - url: /api/v1
 tags:
@@ -225,7 +226,22 @@ paths:
     get:
       tags: [rates]
       responses:
-        "200": { description: Tasas vigentes etiquetadas }
+        "200": { description: Tasas vigentes etiquetadas (value como cadena; source_timestamp nulo hasta D-04) }
+  /rates/history:
+    get:
+      tags: [rates]
+      responses:
+        "200": { description: Historial paginado por instrumento }
+  /rates/status:
+    get:
+      tags: [rates]
+      responses:
+        "200": { description: Salud del proveedor (admin) }
+  /rate-snapshots/{id}:
+    get:
+      tags: [rates]
+      responses:
+        "200": { description: Instantánea inmutable }
   /rates/manual:
     post:
       tags: [rates]

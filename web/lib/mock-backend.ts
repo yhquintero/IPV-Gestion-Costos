@@ -431,13 +431,28 @@ export function mockHandle(
   if (method === "GET" && p === "/api/v1/rates/current") {
     const rows = Object.entries(ratesFile.instruments).map(([instrument, value]) => ({
       instrument,
+      base: "CUP",
       value,
       status: "TEST",
       source: "SEED_TEST",
       is_test: true,
+      source_timestamp: null,
       label: "DATOS DE PRUEBA · Tasa de referencia, no oficial",
+      disclaimer: "Tasa de referencia, no oficial",
+      variation: null,
     }));
     return jsonOk(rows);
+  }
+  if (method === "GET" && p === "/api/v1/rates/status") {
+    return jsonOk({
+      provider: "ELTOQUE",
+      d04: "pending",
+      state: { paused: false, last_outcome: "SKIPPED", consecutive_failures: 0 },
+      last_run: null,
+    });
+  }
+  if (method === "GET" && p.startsWith("/api/v1/rates/history")) {
+    return jsonOk([]);
   }
 
   if (method === "GET" && p === "/api/v1/audit/verify") {
