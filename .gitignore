@@ -1,0 +1,63 @@
+# ───────── Secretos y credenciales (NUNCA versionar) ─────────
+.env
+.env.*
+!.env.example
+secrets/
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+keystore.properties
+local.properties
+service-account*.json
+
+# ───────── Datos locales y copias ─────────
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.bak
+/backups/
+/data/
+
+# ───────── JVM / Gradle / Android ─────────
+.gradle/
+build/
+out/
+*.class
+*.hprof
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+
+# ───────── Node / Next.js ─────────
+node_modules/
+.next/
+.turbo/
+.vite/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+npm-debug.log*
+pnpm-debug.log*
+
+# ───────── Python (herramientas auxiliares) ─────────
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# ───────── IDE y sistema operativo ─────────
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
