@@ -7,14 +7,11 @@ Formato: **Contexto → Decisión → Alternativas → Consecuencias → Verific
 | ADR | Título | Estado |
 |---|---|---|
 | [0001](0001-reabrir-offline-y-multisucursal.md) | Reabrir la edición sin conexión y la multi‑sucursal | **Propuesto** |
+| [0002](0002-pila-backend-kotlin-spring.md) | Pila del backend (Kotlin + Spring Boot) | **Aceptado (provisional, Fase 2)** |
+| [0003](0003-proveedor-licencias.md) | Proveedor de licencias (puerto, no Cloud sin dictamen) | **Aceptado (provisional, Fase 2)** |
+| [0004](0004-politica-tasa-cambio.md) | Política de tasa de cambio para documentos | **Aceptado (provisional, Fase 2)** |
+| [0005](0005-despliegue-saas-central.md) | Modelo de despliegue e aislamiento | **Aceptado (provisional, Fase 2)** |
+| [0006](0006-vocabulario-ipv-ficha.md) | Orden y vocabulario IPV ↔ Ficha de Costo | **Aceptado (provisional, Fase 2)** |
+| [0007](0007-redondeo-y-precision.md) | Redondeo y precisión monetaria | **Aceptado (provisional, Fase 2)** |
 
-## ADR previstos (se redactan cuando se valide el diseño; hoy son solo títulos)
-
-| ADR | Título previsto | Depende de | Fase |
-|---|---|---|---|
-| 0002 | Pila del backend (Kotlin + Spring Boot vs alternativas), tras el spike S‑5 | [D‑31](../16-decisiones-pendientes.md#d-31) | 2 |
-| 0003 | Proveedor de licencias: Keygen Cloud / Keygen CE / propio | [D‑05](../16-decisiones-pendientes.md#d-05) | 1‑2 |
-| 0004 | Política de tasa de cambio para documentos oficiales | [D‑03](../16-decisiones-pendientes.md#d-03), [D‑04](../16-decisiones-pendientes.md#d-04) | 2 |
-| 0005 | Modelo de despliegue y aislamiento (SaaS / por cliente / híbrido) | [D‑06](../16-decisiones-pendientes.md#d-06), [D‑07](../16-decisiones-pendientes.md#d-07) | 1‑2 |
-| 0006 | Orden y vocabulario IPV ↔ Ficha de Costo | [D‑01](../16-decisiones-pendientes.md#d-01) | 2 |
-| 0007 | Política de redondeo y precisión monetaria | [D‑25](../16-decisiones-pendientes.md#d-25) | 2 |
+Los ADR‑0002…0007 recogen los *defaults* del análisis para **desbloquear la Fase 2**. El propietario puede reemplazarlos. Siguen ⛔ el dictamen legal (D‑05/D‑06), el token de elTOQUE (D‑04) y la norma cubana (D‑02).

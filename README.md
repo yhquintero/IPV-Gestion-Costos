@@ -9,9 +9,21 @@ con usuarios, roles y permisos, auditoría completa y **licenciamiento por usuar
 
 ## Estado
 
-**Fase 1 de 10 — análisis de arquitectura (propuesto para validación).** Todavía **no hay código de producto**: el prompt maestro exige validar el diseño antes de implementarlo, por fases y de forma verificable.
+**Fase 10 de 10 — despliegue (artefactos).** Compose/Caddy/runbooks en el repo. **G‑4 no firmado**; no hay piloto ni simulacro medido.
 
-➡️ **Empieza aquí: [`docs/README.md`](docs/README.md)** — resumen ejecutivo, los 20 entregables del análisis, el ADR que reemplaza el aplazamiento de offline/multi‑sucursal y las decisiones que necesitan tu respuesta.
+➡️ **Fases:** [`docs/fases/README.md`](docs/fases/README.md) · **Fase 10:** [`docs/fases/10-despliegue.md`](docs/fases/10-despliegue.md)
+
+```bash
+# JDK 21 + Docker (Testcontainers)
+gradle test
+gradle :core:domain:test --tests cu.ipvgc.domain.security.* --tests cu.ipvgc.domain.sync.*
+
+# Web (Fase 4)
+cd web && npm ci && npm run test:e2e
+
+# Android (Fase 5) — SDK
+cd android && gradle testDebugUnitTest assembleDebug
+```
 
 | Documento | Contenido |
 |---|---|

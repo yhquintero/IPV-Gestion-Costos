@@ -1,0 +1,58 @@
+name: ci-core-server
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    name: core + server (Fase 2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+      - name: Test core, seed and server
+        run: |
+          set -o pipefail
+          {
+            echo '=== gradle projects ==='
+            gradle projects --no-daemon --stacktrace
+            echo '=== compile domain ==='
+            gradle :core:domain:compileKotlin :core:domain:compileTestKotlin --no-daemon --stacktrace
+            echo '=== test ==='
+            gradle test --no-daemon --stacktrace
+          } 2>&1 | tee gradle-ci.log
+      - name: Upload gradle log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-ci-log
+          path: gradle-ci.log
+      - name: Annotate gradle tail
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("gradle-ci.log")
+          if not p.exists():
+              print("::error::gradle-ci.log missing")
+              raise SystemExit(0)
+          lines = p.read_text(errors="replace").splitlines()[-60:]
+          print("----- gradle tail -----")
+          print("\n".join(lines))
+          snippet = " | ".join(lines[-8:])[:900]
+          print(f"::error::gradle: {snippet}")
+          PY
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: "**/build/reports/tests/test/"

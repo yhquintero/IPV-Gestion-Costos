@@ -1,0 +1,39 @@
+# Aprovisionamiento idempotente de políticas (doc 7.4.1).
+# Fuente de código: cu.ipvgc.domain.license.PolicyCatalog
+# KEYGEN_MODE=CLOUD está bloqueado hasta D-05 (ADR-0003). Este archivo se aplica
+# contra FakeLicenseProvider en pruebas; no llama a api.keygen.sh.
+product: IPV Gestión de Costos
+expirationBasis: FROM_FIRST_ACTIVATION
+renewalBasis: FROM_EXPIRY   # mandato; no cambiar a FROM_NOW_IF_EXPIRED sin D-12
+expirationStrategy: REVOKE_ACCESS
+scheme: ECDSA_P256_SIGN     # S-1 pendiente; Fake firma con HMAC de prueba
+strict: true
+floating: true
+maxMachines: 2
+overageStrategy: NO_OVERAGE
+requireFingerprintScope: true
+machineUniquenessStrategy: UNIQUE_PER_LICENSE
+protected: true
+authenticationStrategy: TOKEN
+entitlements_base:
+  - IPV_BASIC
+  - COST_SHEETS
+  - REPORTS
+  - ANDROID_ACCESS
+  - WEB_ACCESS
+policies:
+  - code: IPV-TRIAL-7D
+    duration_seconds: 604800
+    maxMachines: 1
+  - code: IPV-MENSUAL
+    duration_seconds: 2592000
+  - code: IPV-TRIMESTRAL
+    duration_seconds: 7776000
+  - code: IPV-SEMESTRAL
+    duration_seconds: 15552000
+  - code: IPV-ANUAL
+    duration_seconds: 31536000
+  - code: IPV-BIENAL
+    duration_seconds: 63072000
+  - code: IPV-TRIENAL
+    duration_seconds: 94608000

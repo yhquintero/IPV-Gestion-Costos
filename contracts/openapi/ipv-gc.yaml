@@ -1,0 +1,394 @@
+openapi: 3.1.0
+info:
+  title: IPV Gestión de Costos API
+  version: 0.9.0
+  description: |
+    Contrato Fases 3–9. Autenticación Bearer JWT (EdDSA).
+    Errores `application/problem+json`. Mutaciones aceptan `Idempotency-Key` y `If-Match`.
+    Sync: POST /sync/push, GET /sync/changes, GET /sync/bootstrap.
+    Licencias: Fake LicenseProvider (KEYGEN_MODE=FAKE). Cloud bloqueado hasta D-05.
+    Tasas: ExchangeRateProvider + MOCK/SEED; API live bloqueada hasta D-04.
+servers:
+  - url: /api/v1
+tags:
+  - name: auth
+  - name: tenancy
+  - name: catalog
+  - name: ipv-values
+  - name: cost-sheets
+  - name: ipv-controls
+  - name: rates
+  - name: audit
+  - name: notifications
+  - name: reports
+  - name: sync
+  - name: licensing
+  - name: commerce
+paths:
+  /auth/login:
+    post:
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+                organization_id: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Tokens o desafío MFA
+        "401":
+          description: Credenciales inválidas (respuesta uniforme)
+        "429":
+          description: Throttle de login (IP o correo)
+  /auth/refresh:
+    post:
+      tags: [auth]
+      security: []
+      responses:
+        "200": { description: Rotación de refresh }
+  /auth/logout:
+    post:
+      tags: [auth]
+      responses:
+        "204": { description: Sesión revocada }
+  /me:
+    get:
+      tags: [auth]
+      responses:
+        "200": { description: Usuario actual y permisos }
+  /companies:
+    get:
+      tags: [tenancy]
+      responses:
+        "200": { description: Empresas de la organización }
+  /branches:
+    get:
+      tags: [tenancy]
+      responses:
+        "200": { description: Sucursales }
+  /categories:
+    get:
+      tags: [catalog]
+      responses:
+        "200": { description: Categorías }
+    post:
+      tags: [catalog]
+      responses:
+        "201": { description: Creada }
+  /raw-materials:
+    get:
+      tags: [catalog]
+      responses:
+        "200": { description: Insumos }
+    post:
+      tags: [catalog]
+      responses:
+        "201": { description: Creado }
+  /products:
+    get:
+      tags: [catalog]
+      responses:
+        "200": { description: Productos }
+    post:
+      tags: [catalog]
+      responses:
+        "201": { description: Creado }
+  /products/{id}:
+    get:
+      tags: [catalog]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200": { description: Producto }
+        "404": { description: No encontrado (también IDOR) }
+  /units:
+    get:
+      tags: [catalog]
+      responses:
+        "200": { description: Unidades }
+  /ipv-values:
+    get:
+      tags: [ipv-values]
+      responses:
+        "200": { description: Valores IPV }
+    post:
+      tags: [ipv-values]
+      responses:
+        "201": { description: Creado }
+        "409": { description: Solape de vigencia }
+  /cost-sheets:
+    get:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: Fichas }
+    post:
+      tags: [cost-sheets]
+      responses:
+        "201": { description: Ficha + borrador }
+  /cost-sheets/{sheetId}/versions/{versionId}:
+    get:
+      tags: [cost-sheets]
+      parameters:
+        - in: path
+          name: sheetId
+          required: true
+          schema: { type: string, format: uuid }
+        - in: path
+          name: versionId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Versión (ETag = version)
+          headers:
+            ETag:
+              schema: { type: string }
+    patch:
+      tags: [cost-sheets]
+      parameters:
+        - in: header
+          name: If-Match
+          schema: { type: string }
+      responses:
+        "200": { description: Borrador actualizado }
+        "409": { description: Congelado o conflicto de versión }
+  /cost-sheets/{sheetId}/versions/{versionId}/prevalidate:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: Hallazgos de reglas v1 }
+  /cost-sheets/{sheetId}/versions/{versionId}/submit:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: EN_REVISION, instantánea de tasas congelada }
+        "422": { description: Reglas bloqueantes }
+  /cost-sheets/{sheetId}/versions/{versionId}/validate:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: VALIDADA }
+        "403": { description: Cuatro ojos }
+  /cost-sheets/{sheetId}/versions/{versionId}/approve:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: APROBADA }
+  /cost-sheets/{sheetId}/versions/{versionId}/activate:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: VIGENTE; la anterior pasa a REEMPLAZADA }
+  /cost-sheets/{sheetId}/versions/{versionId}/return:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: Vuelve a BORRADOR }
+  /cost-sheets/{sheetId}/versions/{versionId}/annul:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "200": { description: ANULADA }
+  /cost-sheets/{sheetId}/versions:
+    post:
+      tags: [cost-sheets]
+      responses:
+        "201": { description: Nueva versión en BORRADOR }
+  /ipv-controls:
+    get:
+      tags: [ipv-controls]
+      responses:
+        "200": { description: Controles }
+    post:
+      tags: [ipv-controls]
+      responses:
+        "201": { description: Control numerado por el servidor }
+  /ipv-controls/{id}/lines:
+    post:
+      tags: [ipv-controls]
+      responses:
+        "200": { description: Línea (I-09) }
+        "422": { description: Versión no vigente para el período }
+  /ipv-controls/{id}/close:
+    post:
+      tags: [ipv-controls]
+      responses:
+        "200": { description: VALIDADO o CON_DIFERENCIAS }
+  /rates/current:
+    get:
+      tags: [rates]
+      responses:
+        "200": { description: Tasas vigentes etiquetadas (value como cadena; source_timestamp nulo hasta D-04) }
+  /rates/history:
+    get:
+      tags: [rates]
+      responses:
+        "200": { description: Historial paginado por instrumento }
+  /rates/status:
+    get:
+      tags: [rates]
+      responses:
+        "200": { description: Salud del proveedor (admin) }
+  /rate-snapshots/{id}:
+    get:
+      tags: [rates]
+      responses:
+        "200": { description: Instantánea inmutable }
+  /rates/manual:
+    post:
+      tags: [rates]
+      responses:
+        "201": { description: Tasa manual con motivo }
+  /audit:
+    get:
+      tags: [audit]
+      responses:
+        "200": { description: Eventos }
+  /audit/verify:
+    get:
+      tags: [audit]
+      responses:
+        "200": { description: Verificación de hashes y bloques }
+  /notifications:
+    get:
+      tags: [notifications]
+      responses:
+        "200": { description: Bandeja }
+  /reports/cost-sheets:
+    get:
+      tags: [reports]
+      responses:
+        "200": { description: Reporte básico }
+  /sync/push:
+    post:
+      tags: [sync]
+      parameters:
+        - in: header
+          name: X-Device-Id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: header
+          name: X-Client-Schema
+          schema: { type: integer, default: 1 }
+      responses:
+        "200": { description: Acks APPLIED / CONFLICT / REJECTED por mutation_id (I-15) }
+  /sync/changes:
+    get:
+      tags: [sync]
+      parameters:
+        - in: query
+          name: cursor
+          schema: { type: integer }
+        - in: query
+          name: epoch
+          schema: { type: integer }
+      responses:
+        "200": { description: Cambios y lápidas, o RESYNC_REQUIRED }
+  /sync/bootstrap:
+    get:
+      tags: [sync]
+      responses:
+        "200": { description: epoch, cursor y aviso de instantánea paginada }
+  /licenses/me:
+    get:
+      tags: [licensing]
+      responses:
+        "200": { description: Estado evaluado (tabla 7.6) y entitlements del usuario }
+  /licenses:
+    get:
+      tags: [licensing]
+      responses:
+        "200": { description: Licencias de la organización (admin) }
+    post:
+      tags: [licensing]
+      responses:
+        "201": { description: Emite licencia vía LicenseProvider (idempotente; I-18 sin clave) }
+  /licenses/{id}/activate:
+    post:
+      tags: [licensing]
+      responses:
+        "200": { description: Activa máquina; vigencia FROM_FIRST_ACTIVATION }
+  /licenses/{id}/web-seat:
+    post:
+      tags: [licensing]
+      responses:
+        "200": { description: Asiento web lógico web:<license_id> }
+  /licenses/{id}/machine-file:
+    post:
+      tags: [licensing]
+      responses:
+        "200": { description: Checkout de machine file (HMAC-FAKE en KEYGEN_MODE=FAKE) }
+  /licenses/{id}/renew:
+    post:
+      tags: [licensing]
+      responses:
+        "200": { description: Renovación FROM_EXPIRY (idempotente) }
+  /licenses/{id}/reconcile:
+    get:
+      tags: [licensing]
+      responses:
+        "200": { description: Compara expiry proveedor vs espejo }
+  /webhooks/keygen:
+    post:
+      tags: [licensing]
+      security: []
+      responses:
+        "200": { description: Webhook HMAC idempotente por event id }
+  /price-catalog:
+    get:
+      tags: [commerce]
+      responses:
+        "200": { description: Catálogo editable USD (D-08) }
+  /contracts:
+    get:
+      tags: [commerce]
+      responses:
+        "200": { description: Contratos de la organización }
+    post:
+      tags: [commerce]
+      responses:
+        "201": { description: Alta de contrato }
+  /contracts/{id}/items:
+    post:
+      tags: [commerce]
+      responses:
+        "200": { description: Ítem con CUP congelado HALF_UP }
+  /payments:
+    post:
+      tags: [commerce]
+      responses:
+        "201": { description: Pago PENDING }
+  /payments/{id}/confirm:
+    post:
+      tags: [commerce]
+      responses:
+        "200": { description: Confirma pago, recibo y renovación opcional }
+  /receipts:
+    get:
+      tags: [commerce]
+      responses:
+        "200": { description: Recibos }
+  /openapi.yaml:
+    get:
+      tags: [auth]
+      security: []
+      responses:
+        "200": { description: Este contrato }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []

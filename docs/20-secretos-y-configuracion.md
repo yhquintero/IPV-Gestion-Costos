@@ -95,6 +95,7 @@
 | `KEYGEN_VERIFY_KEY` | — (pública) | clave pública de la cuenta | **También se incrusta en las apps**; crítica para integridad |
 | `KEYGEN_LICENSE_SCHEME` | — | `ECDSA_P256_SIGN` · `ED25519_SIGN` | Resultado de S‑1 |
 | `KEYGEN_WEBHOOK_TOLERANCE_SECONDS` | — | `300` | Verificación de firma con la clave pública |
+| **`KEYGEN_WEBHOOK_SECRET`** (o `_FILE`) | **S** | HMAC hex (`X-Webhook-Signature`) | Solo servidor; en `FAKE` el default es marcador local |
 | `LICENSE_OFFLINE_GRACE_DAYS` | — | `14` | 7‑15; TTL del archivo de máquina |
 | `LICENSE_EXPIRING_THRESHOLD_DAYS` | — | `7` | POR VENCER |
 | `LICENSE_DEFAULT_MAX_DEVICES` | — | `2` | Configurable |
@@ -136,7 +137,7 @@
 
 | Valor | Público | Notas |
 |---|---|---|
-| `API_BASE_URL` | Sí | `https://…` |
+| `API_BASE_URL` / `ipv.apiBaseUrl` | Sí | `https://…` (Gradle `BuildConfig`; default inválido) |
 | `TLS_PINS` | Sí | SPKI SHA‑256 (≥ 2, con respaldo) + fecha de caducidad del conjunto |
 | `KEYGEN_ACCOUNT_ID` · `KEYGEN_VERIFY_KEY` | Sí | **Constantes en el código** (recomendación de Keygen ✅); la compilación *release* **falla si están vacías** (práctica heredada de IPV) |
 | `LICENSE_SCHEME` | Sí | Debe coincidir con el `alg` esperado |
@@ -152,7 +153,18 @@
 | `COSIGN_KEY` (o firma sin clave) | **S** | Firma de imágenes |
 | `RENOVATE_TOKEN` | **S** | Actualización de dependencias |
 | `PLAY_SERVICE_ACCOUNT_JSON` | **S** | Solo si se publica en Play ([D‑19](16-decisiones-pendientes.md#d-19)) |
-| `DOMAIN` · `ACME_EMAIL` · `ACME_CA` | — | Caddy/TLS |
+| `DOMAIN` · `ACME_EMAIL` · `ACME_CA` | — | Caddy/TLS. Registry/firma (`GHCR_TOKEN`, `COSIGN_KEY`, `DEPLOY_*`) **no cableados** (D-06) |
+
+## 20.5b Sitio web (BFF · Fase 4)
+
+El navegador **no** recibe tokens JWT. El BFF guarda `ipv_access` / `ipv_refresh` HttpOnly y un `ipv_csrf` legible para el patrón de doble envío.
+
+| Variable | S | Ejemplo | Notas |
+|---|---|---|---|
+| `API_URL` | — | `http://127.0.0.1:8080` | Vacío = almacén de demostración. **Obligatoria** si `APP_ENV=prod` |
+| `MOCK_API` | — | `1` | Fuerza el almacén de demostración (nunca en prod) |
+| `COOKIE_SECURE` | — | `true` | Cookies `Secure`; en prod se activa también por `APP_ENV` |
+| `APP_BASE_URL` | — | `https://app.ejemplo.tld` | Enlaces absolutos (prueba, correos) |
 
 ## 20.6 Gestión
 

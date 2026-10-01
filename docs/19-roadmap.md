@@ -27,56 +27,65 @@
 
 ## 19.3 Detalle
 
-### Fase 1 · Análisis y validación (actual)
+### Fase 1 · Análisis y validación (entregada)
 
 - **Alcance**: este paquete; ADR‑0001; decisiones D‑xx; consultas externas (token y términos de elTOQUE, dictamen sobre Keygen y hosting).
 - **Tras la validación del diseño**: *spikes* [S‑1 a S‑7](#spikes) (prototipos **descartables**, no producto).
 - **Gate**: validación del propietario; decisiones prioritarias resueltas ([§16.1](16-decisiones-pendientes.md#161-las-decisiones-que-condicionan-todo-lo-demás-resolver-primero)).
 
-### Fase 2 · Modelo de datos
+### Fase 2 · Modelo de datos (en curso)
 
 - **Alcance**: esqueleto Gradle (`core`, `server`); migraciones Flyway; RLS forzado; *triggers* de inmutabilidad; generador de semillas sintéticas; `core:domain` con `Money`/redondeo y vectores dorados; CI base; ADR‑0002…0007 según decisiones.
 - **Criterios**: cada invariante I‑01…I‑20 con **prueba en Testcontainers**; pruebas de propiedades de dinero; migraciones reproducibles desde cero.
+- **Código**: [docs/fases/02-modelo-de-datos.md](fases/02-modelo-de-datos.md) · `core/domain` · `server/db/migration` · `server/app` · `tools/seed`.
 
-### Fase 3 · Backend/API
+### Fase 3 · Backend/API (en curso)
 
 - **Alcance**: identidad (Argon2id, MFA, sesiones), acceso (RBAC+ABAC), tenencia, catálogo, valores IPV, **ciclo de vida de la ficha** (7 estados), reglas v1, aprobaciones, Control IPV (`CONSISTENCIA` y `DERIVA_COSTOS`), auditoría con bloques firmados, **puerto de tasas + tasa manual**, notificaciones básicas, reportes básicos, OpenAPI, `Idempotency-Key`, `ETag`.
 - **Criterios**: contrato verde; **los comportamientos cubiertos por las 123 pruebas de IPV reproducidos como casos de aceptación**; pruebas IDOR por endpoint; `GET /audit/verify` sin rupturas; ASVS L2 (parcial) documentado.
+- **Código**: [docs/fases/03-backend-api.md](fases/03-backend-api.md) · `contracts/openapi/ipv-gc.yaml` · `server/app`.
 
-### Fase 4 · Web
+### Fase 4 · Web (en curso)
 
 - **Alcance**: BFF y sesión; panel por rol (catálogo, valores IPV, fichas con flujo, controles, tasas, usuarios, auditoría, estado de licencia); sitio público con precios en USD y **CUP derivado etiquetado** (con tasa manual/de prueba hasta la Fase 8).
 - **Criterios**: Playwright recorre borrador→vigente→control; axe sin violaciones críticas; CSP estricta; ZAP *baseline* limpio.
+- **Código**: [docs/fases/04-web.md](fases/04-web.md) · `web/`.
 
-### Fase 5 · Android
+### Fase 5 · Android (en curso)
 
 - **Alcance**: app multimódulo; login/MFA/biometría; catálogo, valores IPV, fichas y controles **en línea con caché de lectura**; Room + SQLCipher; evaluador de licencia con **archivos dorados** (sin proveedor aún).
 - **Criterios**: pruebas instrumentadas; migraciones de Room probadas; lista MASVS L1; el APK **no contiene secretos**; *build* reproducible.
+- **Código**: [docs/fases/05-android.md](fases/05-android.md) · `android/` · `core/domain/.../license`.
 
-### Fase 6 · Sincronización y offline (ADR‑0001)
+### Fase 6 · Sincronización y offline (ADR‑0001) (en curso)
 
 - **Alcance**: protocolo (bootstrap/push/pull/lápidas/`RESYNC_REQUIRED`), outbox, centro de conflictos, WorkManager, ahorro de datos. Etapas **6a** (conteos), **6b** (controles y movimientos), **6c** (borradores).
 - **Criterios**: **E‑1…E‑5 en verde en CI**; revisión de G‑2 (aislamiento, amenazas, conflictos, recuperación); 2 semanas de uso interno en 6a **sin pérdida de datos**.
+- **Código**: [docs/fases/06-sync-offline.md](fases/06-sync-offline.md) · `core/domain/.../sync` · `server/.../sync` · `android/core/data`.
 
-### Fase 7 · Keygen, licencias y comercial
+### Fase 7 · Keygen, licencias y comercial (en curso)
 
 - **Alcance**: adaptadores `LicenseProvider`; aprovisionamiento idempotente de políticas y derechos; activación y archivos de máquina; asiento web; *webhooks*; aplicación de derechos; renovación; catálogo de precios, contratos, pagos, recibos; pantallas de plataforma.
 - **Criterios**: evaluador de estados **dirigido por tabla** (los 7 estados + orden de evaluación); conciliación de renovaciones; pruebas con proveedor simulado **y** con Keygen real/CE (según D‑05).
+- **Código**: [docs/fases/07-licencias.md](fases/07-licencias.md) · `core/domain/.../license` · `server/.../licensing` · `commerce` · `deploy/keygen`. Cloud ⛔ D-05.
 
-### Fase 8 · elTOQUE
+### Fase 8 · elTOQUE (en curso)
 
 - **Alcance**: `ElToqueApiProvider`, `CachedProvider`, planificador con líder, validación, estados, etiquetas, alertas, instantáneas, servidor simulado.
 - **Criterios**: pruebas de contrato con *fixtures* reales saneados; inyección de fallos; lista de cumplimiento de términos; D‑04 respondida.
+- **Código**: [docs/fases/08-eltoque.md](fases/08-eltoque.md) · `core/domain/.../rates` · `server/.../rates` · `tools/mock-eltoque`. API live ⛔ D-04.
 
-### Fase 9 · Pruebas y endurecimiento
+### Fase 9 · Pruebas y endurecimiento (en curso)
 
 - **Alcance**: regresión completa, seguridad (ZAP, ASVS L2, MASVS), carga (k6), caos de sync, accesibilidad, **prueba de penetración externa**, simulacro de restauración.
 - **Criterios**: los 30 criterios de aceptación del prompt (§36) verificados uno a uno (matriz de trazabilidad por construir al validar el diseño); sin hallazgos críticos/altos abiertos.
+- **Código**: [docs/fases/09-endurecimiento.md](fases/09-endurecimiento.md) · matriz de criterios **documentados** (el §36 no está en el repo). Pentest/ZAP/k6/restauración **no ejecutados**.
 
-### Fase 10 · Despliegue
+### Fase 10 · Despliegue (artefactos)
 
 - **Alcance**: Compose + Caddy, secretos aprovisionados, CI/CD con firma, monitoreo y alertas, copias externas, *runbooks*, lista de salida a producción, **piloto controlado**.
 - **Criterios**: simulacro de restauración cumple RPO/RTO acordados; alertas probadas; criterios de salida del piloto cumplidos (**G‑4**).
+- **Código**: [docs/fases/10-despliegue.md](fases/10-despliegue.md) · `deploy/compose` · `deploy/backup` · `deploy/runbooks`. G‑4 **no firmado**; D‑06 ⛔; simulacro **no medido**.
 
 ## 19.4 Spikes
 
@@ -104,4 +113,4 @@ Código revisado · pruebas automáticas (unidad + integración + contrato donde
 
 ## 19.7 Trazabilidad con los criterios de aceptación (§36)
 
-Cada fase define **criterios propios verificables** (arriba). La matriz que cruza los 30 criterios del §36 con fases y pruebas se construye al validar el diseño, con el texto íntegro de esos criterios en la mano.
+Cada fase define **criterios propios verificables** (arriba). El texto del §36 **no está en este repositorio**. Hay una matriz de criterios **documentados** en [fases/09-matriz-aceptacion.md](fases/09-matriz-aceptacion.md); el cruce 1:1 con el prompt espera el texto íntegro.

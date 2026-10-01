@@ -1,0 +1,13 @@
+{
+  "note": "User-provided 2026-09-30 12:57; unverified; NEVER treated as official. source=SEED_TEST.",
+  "as_of_local": "2026-09-30T12:57:00",
+  "instruments": {
+    "USD": "755.00",
+    "EUR": "850.00",
+    "MLC": "492.76",
+    "CAD": "487.62",
+    "MXN": "52.13",
+    "ZELLE": "724.60",
+    "CLA": "680.37"
+  }
+}

@@ -1,0 +1,24 @@
+# Imagen de la API. No incluye secretos. Compila en CI/host con red a Maven.
+FROM eclipse-temurin:21-jdk AS build
+WORKDIR /src
+COPY settings.gradle.kts build.gradle.kts gradle.properties ./
+COPY gradle ./gradle
+COPY core ./core
+COPY server ./server
+COPY tools ./tools
+COPY contracts ./contracts
+RUN apt-get update && apt-get install -y --no-install-recommends unzip curl \
+    && rm -rf /var/lib/apt/lists/*
+# CI usa Gradle 8.14.3 (mismo pin que workflows).
+RUN --mount=type=cache,target=/root/.gradle \
+    curl -fsSL https://services.gradle.org/distributions/gradle-8.14.3-bin.zip -o /tmp/gradle.zip \
+    && unzip -q /tmp/gradle.zip -d /opt \
+    && /opt/gradle-8.14.3/bin/gradle :server:app:bootJar --no-daemon
+
+FROM eclipse-temurin:21-jre-alpine
+RUN adduser -S -u 65532 app && apk add --no-cache wget
+WORKDIR /app
+COPY --from=build /src/server/app/build/libs/*.jar /app/app.jar
+USER 65532
+EXPOSE 8080
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "/app/app.jar"]

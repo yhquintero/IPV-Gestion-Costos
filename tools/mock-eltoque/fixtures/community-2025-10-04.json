@@ -1,0 +1,16 @@
+{
+  "note": "Community sample 2025-10-04 (anexo B). Not an official schema. Not product seed.",
+  "tasas": {
+    "USD": 442.0,
+    "ECU": 500.0,
+    "MLC": 210.0,
+    "USDT_TRC20": 440.0,
+    "BTC": 1.0,
+    "BNB": 1.0,
+    "TRX": 1.0
+  },
+  "date": "2025-10-04",
+  "hour": 10,
+  "minutes": 34,
+  "seconds": 15
+}

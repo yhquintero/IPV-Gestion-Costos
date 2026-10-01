@@ -1,0 +1,36 @@
+name: ci-sync
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "core/domain/src/main/kotlin/cu/ipvgc/domain/sync/**"
+      - "core/domain/src/test/kotlin/cu/ipvgc/domain/sync/**"
+      - "server/app/src/main/kotlin/cu/ipvgc/server/sync/**"
+      - "server/db/migration/V12*"
+      - "android/core/data/**"
+      - ".github/workflows/ci-sync.yml"
+  pull_request:
+    paths:
+      - "core/domain/src/main/kotlin/cu/ipvgc/domain/sync/**"
+      - "core/domain/src/test/kotlin/cu/ipvgc/domain/sync/**"
+      - "server/app/src/main/kotlin/cu/ipvgc/server/sync/**"
+      - "server/db/migration/V12*"
+      - "android/core/data/**"
+      - ".github/workflows/ci-sync.yml"
+
+jobs:
+  g3:
+    name: E-1…E-5 (G-3)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+      - name: Suite G-3
+        run: gradle :core:domain:test --tests "cu.ipvgc.domain.sync.*" --no-daemon --stacktrace

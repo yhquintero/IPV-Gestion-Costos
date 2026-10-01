@@ -57,6 +57,8 @@ IPV-Gestion-Costos/
 
 **Por qué dos *builds* Gradle (`core`+`server` y `android`)**: compilar el servidor no debe exigir el SDK de Android. Android incorpora `core:domain` con **`includeBuild("../core")`** (compilación compuesta), de modo que el **mismo código** corre en ambos sin publicarlo.
 
+En **Fase 2** hay un *build* raíz que incluye `core:domain`, `server:app` y `tools:seed` (sin Android). El *build* Android se añade en la Fase 5 como proyecto aparte.
+
 ## 18.2 Convenciones
 
 | Tema | Regla |
@@ -80,7 +82,11 @@ IPV-Gestion-Costos/
 | `ci-contract` | Validación y *diff* de OpenAPI, pruebas de contrato |
 | `ci-security` | gitleaks, CodeQL/Semgrep, Trivy (código y contenedores), dependency‑check, ZAP contra *staging* |
 | `ci-sync` | Suite E‑1…E‑5 (gate G‑3) en cada cambio que toque sincronización |
-| `release-*` | Firma y publicación de imágenes/APK con secretos de alcance mínimo |
+| `ci-license` | Evaluador por tabla, Fake `LicenseProvider`, renovación FROM_EXPIRY |
+| `ci-rates` | Parser elTOQUE + Fake HTTP (nunca la API real) |
+| `ci-security` | gitleaks + throttle/caos de sync |
+| `ci-deploy` | Presencia de Compose, Caddy, dump y runbooks (no publica imágenes) |
+| `release-*` | Firma y publicación de imágenes/APK (no cableado; D-06) |
 
 ## 18.4 Relación con los repositorios origen
 
@@ -93,12 +99,12 @@ IPV-Gestion-Costos/
 | Fase | Se crea |
 |---|---|
 | 1 (ahora) | `docs/`, `README.md`, `.gitignore` |
-| 2 | Esqueleto Gradle (`core`, `server`), migraciones, `tools/seed`, CI base |
-| 3 | `server/modules/*`, `contracts/openapi`, `tools/audit-verify` |
-| 4 | `web/` |
-| 5 | `android/` |
-| 6 | Sync (módulo `sync`, `core-data` de Android), suite E‑1…E‑5 |
-| 7 | `deploy/keygen`, módulos `licensing` y `commerce` |
-| 8 | Proveedores de tasas, `tools/mock-eltoque` |
-| 9 | Pruebas de carga y seguridad, endurecimiento |
-| 10 | `deploy/compose`, `deploy/backup`, `deploy/runbooks`, flujos de release |
+| 2 | Esqueleto Gradle (`core`, `server`), migraciones, `tools/seed`, CI base — **hecho** (ver [fases/02](fases/02-modelo-de-datos.md)) |
+| 3 | API en `server/app` (paquetes = módulos), `contracts/openapi`, `GET /audit/verify` — **hecho** (ver [fases/03](fases/03-backend-api.md)) |
+| 4 | `web/` (Next.js + BFF + Playwright) — **hecho** (ver [fases/04](fases/04-web.md)) |
+| 5 | `android/` (multimódulo, `includeBuild` de `core`) — **hecho** (ver [fases/05](fases/05-android.md)) |
+| 6 | Sync (módulo `sync`, outbox Android, suite E‑1…E‑5) — **hecho** (ver [fases/06](fases/06-sync-offline.md)) |
+| 7 | `deploy/keygen`, módulos `licensing` y `commerce` — **hecho** (Fake; ver [fases/07](fases/07-licencias.md)) |
+| 8 | Proveedores de tasas, `tools/mock-eltoque` — **hecho** (MOCK/SEED; ver [fases/08](fases/08-eltoque.md)) |
+| 9 | Pruebas de carga y seguridad, endurecimiento — **parcial** (ver [fases/09](fases/09-endurecimiento.md)) |
+| 10 | `deploy/compose`, `deploy/backup`, `deploy/runbooks` — **artefactos** (ver [fases/10](fases/10-despliegue.md)); G-4 no firmado |

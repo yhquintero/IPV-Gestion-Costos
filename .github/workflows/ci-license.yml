@@ -1,0 +1,48 @@
+name: ci-license
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "core/domain/src/main/kotlin/cu/ipvgc/domain/license/**"
+      - "core/domain/src/test/kotlin/cu/ipvgc/domain/license/**"
+      - "core/domain/src/main/resources/golden/license-states.json"
+      - "server/app/src/main/kotlin/cu/ipvgc/server/licensing/**"
+      - "server/app/src/main/kotlin/cu/ipvgc/server/commerce/**"
+      - "server/db/migration/V13*"
+      - "deploy/keygen/**"
+      - ".github/workflows/ci-license.yml"
+  pull_request:
+    paths:
+      - "core/domain/src/main/kotlin/cu/ipvgc/domain/license/**"
+      - "core/domain/src/test/kotlin/cu/ipvgc/domain/license/**"
+      - "core/domain/src/main/resources/golden/license-states.json"
+      - "server/app/src/main/kotlin/cu/ipvgc/server/licensing/**"
+      - "server/app/src/main/kotlin/cu/ipvgc/server/commerce/**"
+      - "server/db/migration/V13*"
+      - "deploy/keygen/**"
+      - ".github/workflows/ci-license.yml"
+
+jobs:
+  evaluator:
+    name: License evaluator + Fake provider
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+      - name: Suite licencia (tabla, Fake, renovación)
+        run: |
+          set -o pipefail
+          gradle :core:domain:test --tests "cu.ipvgc.domain.license.*" --no-daemon --stacktrace 2>&1 | tee gradle-ci.log
+      - name: Upload gradle log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-license-log
+          path: gradle-ci.log

@@ -1,0 +1,28 @@
+# Valida que los artefactos de Fase 10 existan. No construye ni publica imágenes
+# (firma y registry ⛔ D-06). No sustituye un simulacro de restauración.
+name: ci-deploy
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  artifacts:
+    name: compose + runbooks presentes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Required files
+        run: |
+          test -f deploy/compose/docker-compose.yml
+          test -f deploy/compose/Caddyfile
+          test -f deploy/compose/Dockerfile.api
+          test -f deploy/compose/Dockerfile.web
+          test -f deploy/backup/pg_dump.sh
+          test -f deploy/backup/restore.sh
+          test -f deploy/runbooks/incidentes.md
+          test -f docs/fases/10-g4-piloto.md
+          grep -q 'ports:' deploy/compose/docker-compose.yml
+          grep -q 'caddy:' deploy/compose/docker-compose.yml
+          ! grep -qi 'keygen-ce' deploy/compose/docker-compose.yml
