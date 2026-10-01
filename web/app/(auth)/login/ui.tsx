@@ -18,6 +18,7 @@ export function LoginForm() {
     const form = new FormData(event.currentTarget);
     const res = await fetch("/api/bff/login", {
       method: "POST",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: String(form.get("email") ?? ""),

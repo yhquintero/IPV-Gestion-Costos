@@ -16,7 +16,9 @@ export default defineConfig({
     locale: "es-CU",
   },
   webServer: {
-    command: `npx next dev --hostname 0.0.0.0 --port ${port}`,
+    command: process.env.CI
+      ? `npx next start --hostname 127.0.0.1 --port ${port}`
+      : `npx next dev --hostname 127.0.0.1 --port ${port}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

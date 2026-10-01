@@ -37,4 +37,12 @@ jobs:
         with:
           gradle-version: "8.14.3"
       - name: Suite licencia (tabla, Fake, renovación)
-        run: gradle :core:domain:test --tests "cu.ipvgc.domain.license.*" --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          gradle :core:domain:test --tests "cu.ipvgc.domain.license.*" --no-daemon --stacktrace 2>&1 | tee gradle-ci.log
+      - name: Upload gradle log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-license-log
+          path: gradle-ci.log

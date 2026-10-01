@@ -7,13 +7,13 @@ export async function login(page: Page, email: string) {
   await page.goto("/login");
   await page.getByLabel("Correo").fill(email);
   await page.getByLabel("Contraseña").fill(DEMO_PASSWORD);
+  const loginResponse = page.waitForResponse((r) => r.url().includes("/api/bff/login") && r.request().method() === "POST");
   await page.getByTestId("login-submit").click();
-  await Promise.race([
-    page.waitForURL(/\/app\//, { waitUntil: "domcontentloaded", timeout: 20_000 }),
-    page.getByRole("alert").waitFor({ state: "visible", timeout: 20_000 }).then(async () => {
-      throw new Error(`login failed: ${await page.getByRole("alert").innerText()}`);
-    }),
-  ]);
+  const res = await loginResponse;
+  if (!res.ok()) {
+    throw new Error(`login HTTP ${res.status()}: ${(await res.text()).slice(0, 500)}`);
+  }
+  await page.waitForURL(/\/app\//, { waitUntil: "domcontentloaded", timeout: 30_000 });
 }
 
 export async function logout(page: Page) {

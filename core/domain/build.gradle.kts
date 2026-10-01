@@ -8,16 +8,12 @@ version = "0.5.0"
 
 java {
     toolchain {
-        // CI y el servidor traen JDK 21. El bytecode se fija a 17 para Android (desugar).
         languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 kotlin {
     jvmToolchain(21)
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
 }
 
 dependencies {
